@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Emerald Rush — MC Portfolio</title>
+
+<!-- Blocky vibe fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --emerald:#1fe07b;
+    --emerald-dark:#13b861;
+    --sky:#8ed5ff;
+    --ink:#0c1220;
+    --paper:#f5fcff;
+    --stone:#1b263b;
+    --accent:#00e0ff;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    color:var(--paper);
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(255,255,255,.12), transparent 60%),
+      linear-gradient(#4cc3ff, #46b7ff 30%, #23a7ff 60%, #1b9bff 100%);
+    font-family: Rubik, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    overflow-x:hidden;
+  }
+
+  /* Top bar */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    background:linear-gradient(0deg, rgba(0,0,0,.25), rgba(0,0,0,.4));
+    backdrop-filter: blur(4px);
+    border-bottom:4px solid #0a1422;
+  }
+  .wrap{
+    max-width:1100px; margin:0 auto; padding:14px 18px; display:flex; align-items:center; gap:18px;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px; font-family:"Press Start 2P", system-ui; letter-spacing:1px;
+    color:white; text-shadow:0 3px 0 rgba(0,0,0,.35);
+  }
+  .brand .cube{
+    width:18px; height:18px; background:var(--emerald); box-shadow:0 3px 0 var(--emerald-dark), 0 0 12px rgba(31,224,123,.7) inset, 0 0 22px rgba(31,224,123,.6);
+    image-rendering:pixelated; transform:rotate(45deg);
+  }
+  nav{margin-left:auto; display:flex; gap:14px; flex-wrap:wrap}
+  nav a{
+    color:white; text-decoration:none; font-family:"Press Start 2P"; font-size:12px;
+    padding:10px 12px; border:3px solid rgba(255,255,255,.25); border-radius:6px;
+    background:rgba(9,15,26,.35);
+  }
+  nav a:hover{border-color:var(--emerald); box-shadow:0 0 0 3px rgba(31,224,123,.15) inset}
+
+  /* HERO */
+  .hero{
+    position:relative; min-height:100svh; display:grid; place-items:center;
+    overflow:hidden; border-bottom:6px solid #07304e;
+  }
+  .hero .scene{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; user-select:none; pointer-events:none;}
+  .hero .bg{
+    filter:saturate(1.05) contrast(1.05) brightness(1.04);
+    transform:scale(1.02);
+  }
+
+  /* Character layer: clip to the left where the character lives */
+  .hero .char{
+    clip-path: polygon(0% 0%, 53% 0%, 53% 100%, 0% 100%);
+    image-rendering:auto;
+    will-change: transform, filter;
+    transform-origin: 25% 65%;
+    animation:
+      breathe 3.6s ease-in-out infinite,
+      bob 1.8s ease-in-out infinite;
+    filter: drop-shadow(0 12px 18px rgba(0,0,0,.35));
+  }
+  /* Subtle shiny sweep over the sword/armor area */
+  .hero .char::after{
+    content:"";
+    position:absolute; inset:0;
+    background: linear-gradient(110deg, transparent 35%, rgba(255,255,255,.15) 45%, rgba(255,255,255,.75) 50%, rgba(255,255,255,.12) 55%, transparent 65%);
+    mix-blend-mode: screen;
+    animation: glint 4.5s ease-in-out infinite;
+    pointer-events:none;
+    clip-path: inherit;
+  }
+
+  @keyframes breathe{
+    0%,100%{ transform: translate3d(0,0,0) scale(1) rotate(0deg) }
+    50%{ transform: translate3d(0,-8px,0) scale(1.02) rotate(-0.6deg) }
+  }
+  @keyframes bob{
+    0%,100%{ filter: drop-shadow(0 12px 18px rgba(0,0,0,.35)) }
+    50%{ filter: drop-shadow(0 16px 22px rgba(0,0,0,.45)) }
+  }
+  @keyframes glint{
+    0%{ transform: translateX(-120%) }
+    40%{ transform: translateX(130%) }
+    100%{ transform: translateX(130%) }
+  }
+
+  /* Parallax controlled by JS via CSS vars */
+  .hero{ --mx:0; --my:0; }
+  .hero .bg{ transform: scale(1.05) translateX(calc(var(--mx)*-12px)) translateY(calc(var(--my)*-8px)); }
+  .hero .char{ transform: translateX(calc(var(--mx)*10px)) translateY(calc(var(--my)*6px)); }
+  /* add breathing on top using a wrapper so transforms can stack nicely */
+  .layer{ position:absolute; inset:0; }
+  .char-wrap{ position:absolute; inset:0; }
+
+  /* Right-side card */
+  .hero-card{
+    position:relative; z-index:3; margin-left:min(44vw, 620px); /* push to the right side */
+    background:linear-gradient(180deg, rgba(2,10,20,.75), rgba(2,10,20,.55));
+    border:4px solid rgba(255,255,255,.15);
+    border-radius:12px;
+    padding:28px 26px;
+    max-width:520px;
+    backdrop-filter: blur(6px);
+    box-shadow:0 18px 32px rgba(0,0,0,.45);
+  }
+  .hero-card h1{
+    margin:0 0 12px; font-family:"Press Start 2P"; font-size:30px; line-height:1.1;
+    color:#d7fff1; text-shadow:0 4px 0 rgba(0,0,0,.35), 0 0 24px rgba(31,224,123,.35);
+  }
+  .hero-card p{
+    margin:0 0 18px; color:#e8fbff; opacity:.92;
+  }
+  .badges{ display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 18px; }
+  .badge{
+    font-family:"Press Start 2P"; font-size:10px; padding:8px 10px; border-radius:8px;
+    background:rgba(31,224,123,.15); color:#c4ffe7; border:2px solid var(--emerald-dark);
+    box-shadow:0 0 16px rgba(31,224,123,.18) inset;
+  }
+  .cta{ display:flex; gap:12px; flex-wrap:wrap }
+  .btn{
+    font-family:"Press Start 2P"; font-size:12px; text-decoration:none;
+    padding:12px 14px; border-radius:10px; border:3px solid #052130; transition:.15s transform;
+    box-shadow:0 4px 0 #052130;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn:active{ transform: translateY(2px) }
+  .btn.emerald{ background:linear-gradient(180deg, var(--emerald), var(--emerald-dark)); color:#03210f; text-shadow:0 1px 0 rgba(255,255,255,.35); }
+  .btn.outline{ background:rgba(0,0,0,.35); color:#e8fbff; border-color:#0a314a }
+  .btn.outline:hover{ border-color:var(--accent); box-shadow:0 4px 0 #052130, 0 0 18px rgba(0,224,255,.25) inset }
+
+  /* Sparkle particles */
+  .particles{ position:absolute; inset:0; pointer-events:none; z-index:2; overflow:hidden }
+  .spark{
+    position:absolute; width:6px; height:6px; background:radial-gradient(circle, #fff, #befcff 55%, transparent 65%);
+    border-radius:2px; opacity:.0; transform: translate(-50%, -50%) scale(.7);
+    animation: float 6s ease-in-out infinite, blink 2.4s linear infinite;
+    filter: drop-shadow(0 0 12px rgba(255,255,255,.7));
+  }
+  @keyframes float{
+    0%{ transform: translate(-50%, calc(-50% + 10px)) scale(.8); opacity:0 }
+    20%{ opacity:.9 }
+    50%{ transform: translate(-50%, calc(-50% - 15px)) scale(1) }
+    100%{ transform: translate(-50%, calc(-50% - 30px)) scale(.9); opacity:0 }
+  }
+  @keyframes blink{
+    0%,100%{ filter: drop-shadow(0 0 10px rgba(255,255,255,.5)); }
+    50%{ filter: drop-shadow(0 0 16px rgba(31,224,123,.8)); }
+  }
+
+  /* Sections */
+  section{ scroll-margin-top:76px; }
+  .section{
+    max-width:1100px; margin:0 auto; padding:70px 18px;
+  }
+  .section h2{
+    font-family:"Press Start 2P"; margin:0 0 22px; font-size:22px; color:#d7fff1; text-shadow:0 3px 0 rgba(0,0,0,.35);
+  }
+  .about p{ color:#ebffff; opacity:.93; font-size:18px; line-height:1.65 }
+
+  /* Skills as pixel bars */
+  .skills-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px }
+  .skill{
+    background:linear-gradient(180deg, rgba(3,15,25,.7), rgba(3,15,25,.45));
+    border:3px solid #0d2a3d; border-radius:12px; padding:16px;
+  }
+  .skill h3{ margin:0 0 10px; font-size:14px; font-family:"Press Start 2P" }
+  .bar{
+    height:18px; background:#07304e; border:3px solid #0d2a3d; border-radius:6px; overflow:hidden;
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,.05);
+  }
+  .fill{
+    height:100%; width:0;
+    background:
+      linear-gradient(90deg, rgba(255,255,255,.35) 0 4px, transparent 4px 8px) repeat-x,
+      linear-gradient(180deg, var(--emerald), var(--emerald-dark));
+    background-size: 8px 100%, 100% 100%;
+    box-shadow:0 0 18px rgba(31,224,123,.35);
+    animation: grow 1.6s ease forwards;
+  }
+  @keyframes grow{ from{width:0} to{width:var(--w)} }
+
+  /* Project cards */
+  .grid{
+    display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  }
+  .card{
+    background:linear-gradient(180deg, rgba(3,15,25,.7), rgba(3,15,25,.45));
+    border:3px solid #0d2a3d; border-radius:14px; overflow:hidden; position:relative;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .card:hover{ transform: translateY(-4px); box-shadow:0 18px 28px rgba(0,0,0,.35) }
+  .thumb{
+    aspect-ratio: 16/9; background:#06273b; display:grid; place-items:center; color:#7fdfff; font-family:"Press Start 2P"; font-size:14px;
+    border-bottom:3px solid #0d2a3d; position:relative; overflow:hidden;
+  }
+  .thumb::after{
+    content:""; position:absolute; inset:-20% -40%; background: radial-gradient(50% 50% at 50% 50%, rgba(31,224,123,.25), transparent 60%);
+    animation: aurora 6s ease-in-out infinite alternate;
+  }
+  @keyframes aurora{
+    0%{ transform: translateX(-10%) }
+    100%{ transform: translateX(10%) }
+  }
+  .card .content{ padding:14px 14px 18px }
+  .card h3{ margin:0 0 8px; font-size:16px; font-family:"Press Start 2P" }
+  .card p{ margin:0; opacity:.92 }
+
+  /* Contact */
+  .contact{
+    display:grid; grid-template-columns:1fr; gap:16px;
+    background:linear-gradient(180deg, rgba(3,15,25,.7), rgba(3,15,25,.45)); border:3px solid #0d2a3d; border-radius:12px; padding:18px;
+  }
+  .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center }
+  .copy{
+    font-family:"Press Start 2P"; font-size:12px; padding:10px 12px; border-radius:8px; border:3px solid #0a314a; color:#e8fbff; background:rgba(0,0,0,.35);
+  }
+  .copy.green{ background:linear-gradient(180deg, var(--emerald), var(--emerald-dark)); border-color:#06331e; color:#03210f }
+
+  footer{
+    text-align:center; padding:40px 18px; color:#c7f7ff; opacity:.85;
+  }
+
+  /* Responsive tweak */
+  @media (max-width:900px){
+    .hero-card{ margin: 0 16px; }
+    nav a{ font-size:11px; padding:8px 10px }
+    .hero .char{ clip-path: polygon(0% 0%, 60% 0%, 60% 100%, 0% 100%); }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="brand">
+      <span class="cube"></span>
+      <span>EMERALD RUSH</span>
+    </div>
+    <nav>
+      <a href="#home">HOME</a>
+      <a href="#about">ABOUT</a>
+      <a href="#projects">PROJECTS</a>
+      <a href="#contact">CONTACT</a>
+    </nav>
+  </div>
+</header>
+
+<main id="home" class="hero">
+  <!-- Background and animated character layers (same image) -->
+  <img class="scene bg" src="IMAGE_URL_HERE" alt="Minecraft-style scene background">
+  <img class="scene char" src="IMAGE_URL_HERE" alt="Character breathing animation">
+
+  <!-- Sparkles -->
+  <div class="particles" aria-hidden="true"></div>
+
+  <!-- Right-side card content -->
+  <div class="hero-card">
+    <h1>Emerald Rush</h1>
+    <p>Minecraft builder • PvP thumbnail & banner artist • Server content creator</p>
+    <div class="badges">
+      <span class="badge">THUMBNAILS</span>
+      <span class="badge">LOGOS</span>
+      <span class="badge">PACK ICONS</span>
+      <span class="badge">SERVER ART</span>
+    </div>
+    <div class="cta">
+      <a class="btn emerald" href="#projects">View Projects</a>
+      <a class="btn outline" href="#contact">Hire Me</a>
+    </div>
+  </div>
+</main>
+
+<section class="section about" id="about">
+  <h2>About</h2>
+  <p>
+    Hey! I’m a Minecraft-focused designer and creator. I craft bold, eye-catching visuals
+    for servers and creators—think thumbnails that pop, banner art with motion, and clean brand kits.
+    I also love building and cinematic screenshots. Available for commissions and long-term collabs.
+  </p>
+</section>
+
+<section class="section" id="skills">
+  <h2>Skills</h2>
+  <div class="skills-grid">
+    <div class="skill">
+      <h3>Thumbnails</h3>
+      <div class="bar"><div class="fill" style="--w:92%"></div></div>
+    </div>
+    <div class="skill">
+      <h3>Logos & Branding</h3>
+      <div class="bar"><div class="fill" style="--w:88%"></div></div>
+    </div>
+    <div class="skill">
+      <h3>3D Renders</h3>
+      <div class="bar"><div class="fill" style="--w:84%"></div></div>
+    </div>
+    <div class="skill">
+      <h3>Server Graphics</h3>
+      <div class="bar"><div class="fill" style="--w:90%"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="projects">
+  <h2>Projects</h2>
+  <div class="grid">
+    <article class="card">
+      <div class="thumb">PACK ICONS</div>
+      <div class="content">
+        <h3>Emerald PvP Pack</h3>
+        <p>Clean emerald palette, crisp UI, and custom item icons. Perfect for competitive vibes.</p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="thumb">BANNERS</div>
+      <div class="content">
+        <h3>Creator Banner Set</h3>
+        <p>Animated banner suite for YouTube/Twitch with glow & parallax layers.</p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="thumb">THUMBNAILS</div>
+      <div class="content">
+        <h3>Challenge Series</h3>
+        <p>High-contrast thumbnails that pop at small sizes and tell the story in 1s.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="section" id="contact">
+  <h2>Contact</h2>
+  <div class="contact">
+    <div class="row">
+      <strong style="font-family:'Press Start 2P'">Email:</strong>
+      <button class="copy" data-copy="your@email.com">your@email.com</button>
+    </div>
+    <div class="row">
+      <strong style="font-family:'Press Start 2P'">Discord:</strong>
+      <button class="copy" data-copy="yourDiscord#0000">yourDiscord#0000</button>
+    </div>
+    <div class="row">
+      <a class="btn emerald" href="mailto:your@email.com">Send Email</a>
+      <a class="btn outline" href="#home">Back to top</a>
+    </div>
+  </div>
+</section>
+
+<footer>© <span id="y"></span> Emerald Rush — Built with blocky love.</footer>
+
+<script>
+  // Year
+  document.getElementById('y').textContent = new Date().getFullYear();
+
+  // Parallax on hero
+  const hero = document.querySelector('.hero');
+  const bg = document.querySelector('.bg');
+  const char = document.querySelector('.char');
+
+  function setParallax(e){
+    const rect = hero.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width; // 0..1
+    const y = (e.clientY - rect.top) / rect.height;
+    const nx = (x - 0.5) * 2; // -1..1
+    const ny = (y - 0.5) * 2;
+    hero.style.setProperty('--mx', nx.toFixed(3));
+    hero.style.setProperty('--my', ny.toFixed(3));
+  }
+  hero.addEventListener('mousemove', setParallax);
+  hero.addEventListener('mouseleave', () => {
+    hero.style.setProperty('--mx', 0);
+    hero.style.setProperty('--my', 0);
+  });
+
+  // Sparkle particles
+  const container = document.querySelector('.particles');
+  const SPARKS = 40;
+  for(let i=0;i<SPARKS;i++){
+    const s = document.createElement('span');
+    s.className = 'spark';
+    s.style.left = (Math.random()*100)+'%';
+    s.style.top = (20 + Math.random()*60)+'%';
+    s.style.animationDelay = (Math.random()*4)+'s';
+    s.style.animationDuration = (4 + Math.random()*4)+'s';
+    container.appendChild(s);
+  }
+
+  // Copy to clipboard buttons
+  document.querySelectorAll('.copy').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const text = btn.getAttribute('data-copy');
+      try{
+        await navigator.clipboard.writeText(text);
+        const old = btn.textContent;
+        btn.textContent = 'COPIED!';
+        btn.classList.add('green');
+        setTimeout(()=>{ btn.textContent = old; btn.classList.remove('green'); }, 1200);
+      }catch(e){
+        alert('Could not copy. Right‑click and copy manually.');
+      }
+    });
+  });
+
+  // When page loads, kick skill bars again on scroll into view
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.querySelectorAll('.fill').forEach(f=>{
+          const w = getComputedStyle(f).getPropertyValue('--w');
+          f.style.width = '0';
+          // restart animation
+          f.style.animation = 'none'; f.offsetHeight; f.style.animation = '';
+          f.style.setProperty('--w', w);
+        });
+      }
+    });
+  },{ threshold: .2 });
+  document.querySelectorAll('#skills').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>

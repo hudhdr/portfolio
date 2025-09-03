@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#000000" />
+<title>BRUTAL—PORTFOLIO</title>
+<style>
+  :root{
+    --bg:#0a0a0a;
+    --fg:#ffffff;
+    --ink:#111111;
+    --red:#ff0033;
+    --line:#ffffff;
+    --muted:#9a9a9a;
+    --g: clamp(10px, 1.25vw, 20px);
+    --h1: clamp(3rem, 12vw, 12rem);
+    --h2: clamp(1.3rem, 3.3vw, 3rem);
+    --h3: clamp(1.1rem, 2.2vw, 2rem);
+    --ring: 28px;
+  }
+
+  /* Reset-ish */
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: Impact, "Arial Black", "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.15;
+    letter-spacing: 0.2px;
+    cursor: none;
+  }
+  a { color: inherit; text-decoration: none; }
+  img { max-width: 100%; display: block; }
+  ::selection{ background: var(--fg); color: #000; }
+
+  /* Frame lines */
+  .frame {
+    position: fixed;
+    inset: var(--g);
+    pointer-events: none;
+    border: 3px solid var(--line);
+    mix-blend-mode: difference;
+    z-index: 100;
+  }
+
+  /* Header */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: clamp(54px, 8vh, 92px);
+    padding: 0 var(--g);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: stretch;
+    border-bottom: 3px solid var(--line);
+    background: linear-gradient(0deg, rgba(0,0,0,0.6), rgba(0,0,0,0.6));
+    backdrop-filter: blur(2px);
+    z-index: 50;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 900;
+    letter-spacing: 1px;
+  }
+  .logo .mark {
+    width: 28px; height: 28px;
+    background: var(--red);
+    clip-path: polygon(0 0, 100% 0, 100% 70%, 70% 70%, 70% 100%, 0 100%);
+    border: 3px solid var(--line);
+    box-shadow: -6px 6px 0 0 #fff, -6px 6px 0 3px #000; /* harsh */
+  }
+  nav {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+  }
+  nav a {
+    display: grid;
+    place-items: center;
+    padding: 0 1.1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-left: 3px solid var(--line);
+    position: relative;
+    isolation: isolate;
+  }
+  nav a:hover::before,
+  nav a:focus-visible::before {
+    content:"";
+    position:absolute; inset:0;
+    background: var(--fg);
+    z-index:-1;
+    mix-blend-mode: difference;
+  }
+  nav a:hover { color: #000; }
+  nav a:focus-visible { outline: 3px solid var(--red); outline-offset: -3px;}
+
+  main { padding-top: clamp(54px, 8vh, 92px); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: min(92vh, 860px);
+    border-bottom: 3px solid var(--line);
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+  }
+  .hero__left {
+    position: relative;
+    padding: calc(var(--g) * 2);
+    display: grid;
+    align-content: center;
+    gap: var(--g);
+  }
+  .hero__right {
+    position: relative;
+    border-left: 3px solid var(--line);
+    background: #fff;
+    color: #000;
+    padding: calc(var(--g) * 2) var(--g);
+    overflow: hidden;
+    display: grid;
+    align-content: center;
+  }
+
+  .stamp {
+    position: absolute;
+    top: calc(var(--g) * 2);
+    right: calc(var(--g) * 2);
+    background: var(--red);
+    color: #fff;
+    padding: 8px 12px;
+    border: 3px solid #fff;
+    transform: rotate(8deg);
+    font-weight: 900;
+    mix-blend-mode: normal;
+    z-index: 3;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .h1 {
+    font-size: var(--h1);
+    line-height: 0.85;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -2px;
+    display: grid;
+    gap: 10px;
+  }
+  .h1 span:nth-child(1){ transform: translateX(-8vw) rotate(-6deg); }
+  .h1 span:nth-child(2){ transform: translateX(2vw) rotate(2deg);}
+  .h1 span:nth-child(3){ transform: translateX(-3vw) rotate(-2deg); }
+
+  .hero__blurb {
+    max-width: 62ch;
+    font-size: var(--h3);
+    color: var(--muted);
+  }
+
+  /* CTA block with harsh geometry */
+  .cta {
+    display: grid;
+    gap: var(--g);
+  }
+  .cta .cta__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--g);
+  }
+  .btn {
+    padding: 18px 16px;
+    border: 3px solid #000;
+    background: #000;
+    color: #fff;
+    font-weight: 900;
+    text-transform: uppercase;
+    display: inline-grid;
+    place-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn--alt {
+    background: var(--red);
+    border-color: #000;
+    color: #fff;
+  }
+  .btn::after {
+    content:"";
+    position:absolute; inset:-1px;
+    background:
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.07) 0 6px, rgba(0,0,0,0.07) 6px 12px);
+    mix-blend-mode: overlay;
+    opacity: 0;
+    transition: opacity .18s ease;
+  }
+  .btn:hover::after { opacity: 1; }
+  .btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 #000; }
+
+  /* Red marquee strip */
+  .marquee {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    background: var(--red);
+    color: #fff;
+    border-top: 3px solid var(--line);
+    border-bottom: 3px solid var(--line);
+    overflow: hidden;
+  }
+  .marquee__inner {
+    display: flex;
+    gap: 2rem;
+    white-space: nowrap;
+    font-weight: 900;
+    text-transform: uppercase;
+    padding: 10px 0;
+    animation: move 10s linear infinite;
+  }
+  @keyframes move {
+    to { transform: translateX(-50%); }
+  }
+
+  /* SHAPES */
+  .shape {
+    position: absolute;
+    opacity: 0.9;
+    transition: transform .2s ease, filter .2s ease;
+    will-change: transform;
+    z-index: 2;
+  }
+  .shape:hover { transform: rotate(calc(var(--rot, 0deg) + 12deg)) scale(1.05); filter: drop-shadow(0 0 0.75rem rgba(255,0,51,0.8)); }
+  .shape--triangle {
+    width: clamp(60px, 10vw, 160px); height: clamp(60px, 10vw, 160px);
+    background: #fff;
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    border: 3px solid #000;
+    mix-blend-mode: difference;
+  }
+  .shape--circle {
+    width: clamp(70px, 11vw, 200px); height: clamp(70px, 11vw, 200px);
+    background: var(--red);
+    border-radius: 50%;
+    border: 3px solid #fff;
+    mix-blend-mode: normal;
+  }
+  .shape--bar {
+    width: clamp(120px, 20vw, 340px); height: clamp(16px, 2.6vw, 40px);
+    background: #000;
+    border: 3px solid #fff;
+    transform: skew(-12deg);
+  }
+
+  .shape.s1 { top: 12%; right: 8%; --rot: 8deg; }
+  .shape.s2 { top: 38%; right: 16%; --rot: -4deg; }
+  .shape.s3 { top: 66%; right: 6%; --rot: 15deg; }
+
+  /* WORK GRID */
+  #work {
+    position: relative;
+    padding: calc(var(--g) * 3) var(--g) calc(var(--g) * 4);
+    border-bottom: 3px solid var(--line);
+  }
+  .section__tag {
+    display: inline-block;
+    background: #fff;
+    color: #000;
+    padding: 6px 10px;
+    border: 3px solid #000;
+    font-weight: 900;
+    letter-spacing: 1px;
+    transform: rotate(-2deg);
+    margin-bottom: calc(var(--g) * 2);
+  }
+  .grid {
+    display: grid;
+    gap: calc(var(--g) * 1.2);
+    grid-template-columns: repeat(12, 1fr);
+  }
+
+  .tile {
+    grid-column: span 4;
+    min-height: clamp(220px, 27vw, 420px);
+    display: grid;
+    overflow: hidden;
+    position: relative;
+    border: 3px solid var(--line);
+    background: #111;
+  }
+  .tile:nth-child(2n){ grid-column: span 8; }
+  .tile:nth-child(3n){ grid-column: span 5; }
+  .tile:nth-child(4n){ grid-column: span 7; }
+
+  .tile__ink {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(135deg, #000 0%, #111 40%, #000 100%);
+    mix-blend-mode: normal;
+  }
+  .tile__ink::after {
+    /* rough texture overlay */
+    content:"";
+    position:absolute; inset:0;
+    opacity: 0.18;
+    background-image:
+      /* SVG noise layer */
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' /></svg>");
+    background-size: 220px 220px;
+    animation: noiseShift 7s steps(6) infinite;
+    pointer-events: none;
+  }
+  @keyframes noiseShift {
+    0% { background-position: 0 0; }
+    50% { background-position: 50px 40px; }
+    100% { background-position: 0 0; }
+  }
+
+  .tile__link {
+    z-index: 2;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    padding: calc(var(--g) * 1.4);
+    gap: var(--g);
+    color: #fff;
+  }
+  .tile__title {
+    align-self: end;
+    font-size: clamp(2rem, 5vw, 5rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    line-height: .9;
+    letter-spacing: -1px;
+    text-wrap: balance;
+  }
+  .tile__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: var(--g);
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+  .chip {
+    background: #fff;
+    color:#000;
+    padding: 4px 8px;
+    border: 3px solid #000;
+  }
+
+  /* Tile accents (harsh red/white blocks) */
+  .tile__accent {
+    position: absolute;
+    mix-blend-mode: normal;
+    opacity: 1;
+  }
+  .tile__accent--red {
+    background: var(--red);
+    border: 3px solid #fff;
+    height: 20%;
+    width: 60%;
+    bottom: -3%;
+    right: -2%;
+    transform: rotate(-3deg);
+  }
+  .tile__accent--white {
+    background: #fff;
+    border: 3px solid #000;
+    height: 26%;
+    width: 18%;
+    top: -3%;
+    left: -2%;
+    transform: rotate(6deg);
+  }
+
+  /* Hover antics */
+  .tile:hover { transform: translate(-4px, -4px) rotate(-0.8deg); box-shadow: 10px 10px 0 0 #fff, 10px 10px 0 3px #000; }
+  .tile:hover .tile__title { text-shadow: 4px 0 0 #ff0033, -4px 0 0 #00f0ff; }
+  .tile:hover .tile__ink::after { opacity: .26; }
+  .tile:active { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 0 #fff, 3px 3px 0 3px #000; }
+
+  /* ABOUT */
+  #about {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 3px solid var(--line);
+  }
+  .about__col {
+    padding: calc(var(--g) * 3) var(--g);
+  }
+  .about__col--ink {
+    background: #fff;
+    color: #000;
+    border-right: 3px solid #000;
+  }
+  .about__headline {
+    font-size: var(--h2);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    line-height: .95;
+  }
+  .about__body {
+    margin-top: 1rem;
+    font-size: clamp(1rem, 1.3vw, 1.125rem);
+  }
+  .about__list {
+    list-style: none;
+    padding: 0; margin: 0;
+    display: grid; gap: 10px;
+    margin-top: 1rem;
+  }
+  .about__list li {
+    display: inline-grid;
+    grid-auto-flow: column;
+    align-items: center;
+    gap: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+  .dot {
+    width: 10px; height: 10px;
+    background: var(--red);
+    border: 2px solid #000;
+    border-radius: 50%;
+  }
+
+  /* CONTACT */
+  #contact {
+    padding: calc(var(--g) * 4) var(--g) calc(var(--g) * 6);
+    display: grid;
+    gap: calc(var(--g) * 1.5);
+  }
+  .contact__row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--g);
+  }
+  .contact__block {
+    border: 3px solid var(--line);
+    padding: calc(var(--g) * 2);
+    position: relative;
+    overflow: hidden;
+  }
+  .contact__block--red {
+    background: var(--red);
+    color: #fff;
+    border-color: #fff;
+  }
+  .contact__label {
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: .6rem;
+  }
+  .contact__link {
+    font-size: clamp(1.6rem, 4vw, 3rem);
+    font-weight: 900;
+    display: inline-block;
+    background: #000;
+    color: #fff;
+    padding: 6px 10px;
+    border: 3px solid #fff;
+    transform: rotate(-1.5deg);
+  }
+  .contact__link:hover { transform: rotate(1.5deg) translateY(-2px); }
+
+  /* Texture overlay */
+  .texture {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+    opacity: .22;
+    background-image:
+      /* light speckle */
+      radial-gradient(rgba(255,255,255,.07) 1px, transparent 1px),
+      radial-gradient(rgba(0,0,0,.08) 1px, transparent 1px),
+      /* scanlines */
+      repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0 1px, transparent 1px 3px);
+    background-size: 3px 3px, 4px 4px, 100% 4px;
+    background-position: 0 0, 1px 1px, 0 0;
+    mix-blend-mode: overlay;
+    animation: grainMove 6s linear infinite;
+  }
+  @keyframes grainMove {
+    0% { background-position: 0 0, 1px 1px, 0 0; }
+    50% { background-position: 2px 3px, 3px 2px, 0 2px; }
+    100% { background-position: 0 0, 1px 1px, 0 0; }
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    top: 0; left: 0;
+    width: var(--ring); height: var(--ring);
+    border: 3px solid var(--fg);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 200;
+    pointer-events: none;
+    mix-blend-mode: difference;
+    transition: width .12s ease, height .12s ease, border-color .12s ease, background .12s ease;
+  }
+  .cursor.is-hot {
+    width: 48px; height: 48px;
+    background: var(--red);
+    border-color: #000;
+  }
+
+  /* Responsive tweaks */
+  @media (max-width: 980px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero__right { border-top: 3px solid var(--line); border-left: none; }
+    .shape { display: none; }
+    #about { grid-template-columns: 1fr; }
+    .about__col--ink { border-right: none; border-bottom: 3px solid #000; }
+    .contact__row{ grid-template-columns: 1fr; }
+    .tile { grid-column: span 12 !important; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__inner, .texture, .tile__ink::after { animation: none !important; }
+    .btn, .tile, .shape, .tile__title, .contact__link { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="frame" aria-hidden="true"></div>
+  <header>
+    <div class="logo">
+      <div class="mark" aria-hidden="true"></div>
+      <span>BRUTAL / STUDIO</span>
+    </div>
+    <nav>
+      <a class="hoverable" href="#work">Work</a>
+      <a class="hoverable" href="#about">About</a>
+      <a class="hoverable" href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" aria-label="Introduction">
+      <div class="hero__left">
+        <div class="stamp">Portfolio v.2025</div>
+        <div class="h1" aria-label="Brutalist Web Design">
+          <span>BRUTALIST</span>
+          <span>WEB</span>
+          <span>DESIGN</span>
+        </div>
+        <p class="hero__blurb">
+          Bold geometry. High-contrast blocks. Oversized, asymmetric type.
+          Interactive edges that bite. This is a portfolio that refuses to whisper.
+        </p>
+      </div>
+      <div class="hero__right">
+        <div class="cta">
+          <div class="cta__row">
+            <a class="btn hoverable" href="#work">View Work</a>
+            <a class="btn btn--alt hoverable" href="#contact">Hire Me</a>
+          </div>
+          <div class="cta__row">
+            <div class="btn" style="background:#fff;color:#000;border-color:#000;">Frontend</div>
+            <div class="btn" style="background:#000;color:#fff;border-color:#fff;">Identity</div>
+          </div>
+        </div>
+
+        <!-- Edgy shapes -->
+        <div class="shape shape--triangle s1 hoverable" role="img" aria-label="Sharp triangle"></div>
+        <div class="shape shape--circle s2 hoverable" role="img" aria-label="Red circle"></div>
+        <div class="shape shape--bar s3 hoverable" role="img" aria-label="Angled bar"></div>
+
+        <div class="marquee" aria-hidden="true">
+          <div class="marquee__inner">
+            <span>Available for select chaos</span>
+            <span>— 2025 —</span>
+            <span>High contrast or bust</span>
+            <span>— 2025 —</span>
+            <span>Available for select chaos</span>
+            <span>— 2025 —</span>
+            <span>High contrast or bust</span>
+            <span>— 2025 —</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="work" aria-label="Selected Work">
+      <span class="section__tag">Selected Work</span>
+      <div class="grid">
+        <!-- TILE A -->
+        <article class="tile">
+          <div class="tile__ink"></div>
+          <div class="tile__accent tile__accent--white" aria-hidden="true"></div>
+          <a class="tile__link hoverable" href="#">
+            <h3 class="tile__title">Project A — Brutal UI Kit</h3>
+            <div class="tile__meta">
+              <span class="chip">UI/UX</span>
+              <span>2025</span>
+            </div>
+          </a>
+          <div class="tile__accent tile__accent--red" aria-hidden="true"></div>
+        </article>
+
+        <!-- TILE B -->
+        <article class="tile" style="background:#fff; color:#000;">
+          <div class="tile__ink" style="background: linear-gradient(135deg,#fff 0,#f6f6f6 50%,#fff 100%); mix-blend-mode: multiply;"></div>
+          <div class="tile__accent tile__accent--red" aria-hidden="true" style="border-color:#000;"></div>
+          <a class="tile__link hoverable" href="#" style="color:#000;">
+            <h3 class="tile__title">Project B — Geometric Grid</h3>
+            <div class="tile__meta">
+              <span class="chip" style="background:#000;color:#fff;border-color:#fff;">Web</span>
+              <span>2024</span>
+            </div>
+          </a>
+        </article>
+
+        <!-- TILE C -->
+        <article class="tile" style="background: #ff0033;">
+          <div class="tile__ink" style="background: linear-gradient(135deg,#ff0033 0,#d20027 60%,#ff0033 100%);"></div>
+          <div class="tile__accent tile__accent--white" aria-hidden="true"></div>
+          <a class="tile__link hoverable" href="#">
+            <h3 class="tile__title">Project C — Kinetic Type</h3>
+            <div class="tile__meta">
+              <span class="chip">Motion</span>
+              <span>2025</span>
+            </div>
+          </a>
+        </article>
+
+        <!-- TILE D -->
+        <article class="tile">
+          <div class="tile__ink"></div>
+          <div class="tile__accent tile__accent--red" aria-hidden="true"></div>
+          <a class="tile__link hoverable" href="#">
+            <h3 class="tile__title">Project D — Noise & Grids</h3>
+            <div class="tile__meta">
+              <span class="chip">Experimental</span>
+              <span>2023</span>
+            </div>
+          </a>
+        </article>
+
+        <!-- TILE E -->
+        <article class="tile" style="background:#fff; color:#000;">
+          <div class="tile__ink" style="background: repeating-linear-gradient(45deg,#fff 0,#fff 10px,#f2f2f2 10px,#f2f2f2 20px);"></div>
+          <div class="tile__accent tile__accent--red" aria-hidden="true" style="border-color:#000;"></div>
+          <a class="tile__link hoverable" href="#" style="color:#000;">
+            <h3 class="tile__title">Project E — Asymmetry Rules</h3>
+            <div class="tile__meta">
+              <span class="chip" style="background:#000;color:#fff;border-color:#fff;">Brand</span>
+              <span>2022</span>
+            </div>
+          </a>
+        </article>
+
+        <!-- TILE F -->
+        <article class="tile" style="background:#0d0d0d;">
+          <div class="tile__ink"></div>
+          <div class="tile__accent tile__accent--white" aria-hidden="true"></div>
+          <a class="tile__link hoverable" href="#">
+            <h3 class="tile__title">Project F — Hard Edges</h3>
+            <div class="tile__meta">
+              <span class="chip">Code</span>
+              <span>2025</span>
+            </div>
+          </a>
+        </article>
+      </div>
+    </section>
+
+    <section id="about" aria-label="About">
+      <div class="about__col about__col--ink">
+        <div class="about__headline">
+          I build severe, opinionated interfaces.<br/>
+          High contrast. High intent. Zero fluff.
+        </div>
+        <p class="about__body">
+          Brutalism online is more than an aesthetic—it's a statement.
+          I combine sharp geometry, unforgiving type, and tactile textures
+          to craft experiences that are memorable, performant, and unafraid.
+        </p>
+        <ul class="about__list" aria-label="Capabilities">
+          <li><span class="dot"></span> Design Systems</li>
+          <li><span class="dot"></span> Creative Frontend</li>
+          <li><span class="dot"></span> Motion / Interaction</li>
+          <li><span class="dot"></span> Brand Architecture</li>
+        </ul>
+      </div>
+      <div class="about__col">
+        <div class="about__headline" style="color:var(--red)">Principles</div>
+        <p class="about__body">
+          - Accessibility without compromise.<br/>
+          - Performance as a design constraint.<br/>
+          - Typography as architecture.<br/>
+          - Edges you can feel.
+        </p>
+      </div>
+    </section>
+
+    <section id="contact" aria-label="Contact">
+      <div class="contact__row">
+        <div class="contact__block">
+          <div class="contact__label">Collaborations</div>
+          <a class="contact__link hoverable" href="mailto:hello@brutal.studio">hello@brutal.studio</a>
+        </div>
+        <div class="contact__block contact__block--red">
+          <div class="contact__label">Availability</div>
+          <div style="display:grid;gap:8px;font-weight:900;text-transform:uppercase;">
+            <span>Q4 2025 — Limited</span>
+            <span>Remote / Onsite / Hybrid</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Texture overlay -->
+  <div class="texture" aria-hidden="true"></div>
+
+  <!-- Cursor -->
+  <div class="cursor" aria-hidden="true"></div>
+
+<script>
+  // Custom cursor with gentle easing
+  (() => {
+    const cursor = document.querySelector('.cursor');
+    let x = window.innerWidth / 2, y = window.innerHeight / 2;
+    let tx = x, ty = y;
+    const speed = 0.2;
+
+    function loop(){
+      x += (tx - x) * speed;
+      y += (ty - y) * speed;
+      cursor.style.transform = `translate(${x - 0.5 * cursor.offsetWidth}px, ${y - 0.5 * cursor.offsetHeight}px)`;
+      requestAnimationFrame(loop);
+    }
+    loop();
+
+    window.addEventListener('mousemove', e => {
+      tx = e.clientX; ty = e.clientY;
+    });
+
+    // Enlarge cursor over interactive elements
+    const hots = document.querySelectorAll('.hoverable');
+    hots.forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('is-hot'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('is-hot'));
+    });
+
+    // Keep cursor within viewport on resize
+    window.addEventListener('resize', () => {
+      x = Math.min(x, window.innerWidth);
+      y = Math.min(y, window.innerHeight);
+    });
+  })();
+</script>
+</body>
+</html>

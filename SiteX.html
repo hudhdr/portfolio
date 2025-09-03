@@ -1,0 +1,834 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="description" content="Ultra‑minimal portfolio — crisp white, soft shadows, gradient accents, 3D hero, sleek animations, and a high‑end product vibe." />
+  <title>Portfolio — Minimal, Polished, High‑End</title>
+  <style>
+    :root{
+      /* Color system */
+      --bg: #ffffff;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: rgba(2, 6, 23, 0.08);
+
+      /* Accent gradient */
+      --acc-1: #5ea1ff; /* soft electric blue */
+      --acc-2: #8b6cff; /* violet */
+      --accent: linear-gradient(135deg, var(--acc-1), var(--acc-2));
+
+      /* Shadows + radii */
+      --shadow-1: 0 1px 2px rgba(2, 6, 23, 0.06), 0 10px 24px rgba(2, 6, 23, 0.07);
+      --shadow-2: 0 8px 18px rgba(2, 6, 23, 0.06), 0 24px 48px rgba(2, 6, 23, 0.08);
+      --radius: 16px;
+
+      /* Layout */
+      --container: 1200px;
+      --space-1: clamp(8px, 1.2vw, 12px);
+      --space-2: clamp(12px, 1.6vw, 16px);
+      --space-3: clamp(16px, 2.2vw, 24px);
+      --space-4: clamp(28px, 4vw, 48px);
+      --space-5: clamp(48px, 7vw, 96px);
+
+      /* Motion tuning */
+      --ease-1: cubic-bezier(.2,.7,.2,1);
+      --ease-2: cubic-bezier(.16,1,.3,1);
+
+      /* Hero tilt defaults */
+      --rx: 0deg;
+      --ry: 0deg;
+      --tz: 0px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    html { scroll-behavior: smooth; }
+    body{
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, "Helvetica Neue", Arial, system-ui, sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      letter-spacing: -0.01em;
+    }
+
+    /* Container */
+    .container{
+      max-width: var(--container);
+      padding-inline: clamp(16px, 4vw, 32px);
+      margin-inline: auto;
+    }
+
+    /* Top progress bar */
+    .scroll-progress{
+      position: fixed;
+      left: 0; top: 0;
+      height: 2px;
+      width: 0%;
+      background-image: var(--accent);
+      z-index: 9999;
+      transform-origin: 0 50%;
+    }
+
+    /* Header */
+    .header{
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      backdrop-filter: saturate(180%) blur(12px);
+      background: rgba(255,255,255,0.7);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav{
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      min-height: 64px;
+      gap: var(--space-2);
+    }
+    .brand{
+      justify-self: start;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      font-size: 16px;
+      display: inline-flex; align-items: center; gap: 10px;
+    }
+    .brand .dot{
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 6px 14px rgba(99,102,241,0.35);
+    }
+    .nav ul{
+      list-style: none; margin: 0; padding: 0;
+      display: flex; gap: var(--space-3);
+      justify-self: center;
+    }
+    .nav a{
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      padding: 8px 2px;
+      position: relative;
+    }
+    .nav a::after{
+      content:"";
+      position: absolute; left: 0; bottom: 2px; width: 100%; height: 2px;
+      background-image: var(--accent);
+      transform: scaleX(0);
+      transform-origin: 0 50%;
+      transition: transform .35s var(--ease-1);
+      border-radius: 2px;
+    }
+    .nav a:hover::after, .nav a:focus-visible::after{ transform: scaleX(1); }
+    .nav-cta{
+      justify-self: end;
+      display: flex; gap: var(--space-2);
+    }
+
+    /* Buttons */
+    .btn{
+      appearance: none;
+      border: 0;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0;
+      cursor: pointer;
+      transition: transform .3s var(--ease-2), box-shadow .3s var(--ease-2), background .3s var(--ease-2);
+      position: relative;
+      will-change: transform;
+    }
+    .btn:focus-visible{ outline: 2px solid transparent; box-shadow: 0 0 0 4px rgba(99,102,241,0.15); }
+    .btn-primary{
+      color: #fff;
+      background-image: var(--accent);
+      box-shadow: var(--shadow-1);
+    }
+    .btn-primary:hover{ transform: translateY(-1px); box-shadow: var(--shadow-2); }
+    .btn-ghost{
+      color: var(--text);
+      background: rgba(255,255,255,0.8);
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 1.5px rgba(2,6,23,0.03);
+    }
+    .btn-ghost:hover{ transform: translateY(-1px); box-shadow: var(--shadow-1); }
+    .btn .shine{
+      position: absolute; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none;
+    }
+    .btn .shine::before{
+      content: "";
+      position: absolute; inset: -200% -50% auto auto;
+      width: 60%; height: 300%;
+      transform: rotate(35deg);
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.2) 50%, rgba(255,255,255,0) 100%);
+      transition: transform .8s var(--ease-2), opacity .6s var(--ease-2);
+      opacity: 0;
+    }
+    .btn:hover .shine::before{ transform: translateX(-40%) rotate(35deg); opacity: 1; }
+
+    /* Sections */
+    section{ padding-block: var(--space-5); scroll-margin-top: 96px; }
+    .eyebrow{
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .eyebrow .bar{
+      width: 28px; height: 2px; border-radius: 2px; background-image: var(--accent);
+      opacity: .85;
+    }
+
+    /* Hero */
+    .hero{
+      padding-top: calc(var(--space-5) + 16px);
+      display: grid; gap: var(--space-4);
+    }
+    .hero .wrap{
+      display: grid; gap: var(--space-4);
+      grid-template-columns: 1.1fr .9fr;
+      align-items: center;
+    }
+    @media (max-width: 980px){
+      .hero .wrap{ grid-template-columns: 1fr; }
+    }
+    h1{
+      font-size: clamp(36px, 6vw, 72px);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin: 0 0 var(--space-3);
+    }
+    .gradient-text{
+      background-image: var(--accent);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .lead{
+      color: var(--muted);
+      font-size: clamp(16px, 1.7vw, 20px);
+      margin: 0 0 var(--space-3);
+      max-width: 58ch;
+    }
+    .cta-row{ display: flex; gap: var(--space-2); align-items: center; flex-wrap: wrap; }
+
+    /* Hero visual area with subtle 3D floating elements */
+    .hero-visual{
+      position: relative;
+      min-height: 460px;
+      border-radius: calc(var(--radius) + 8px);
+      border: 1px solid var(--border);
+      background:
+        radial-gradient(1200px 600px at 10% 10%, rgba(99,102,241,0.06), transparent 60%),
+        radial-gradient(1000px 500px at 90% 20%, rgba(94,161,255,0.08), transparent 60%),
+        #fff;
+      box-shadow: var(--shadow-1);
+      overflow: hidden;
+      perspective: 1000px;
+    }
+    .floating-stage{
+      position: absolute; inset: 0;
+      transform-style: preserve-3d;
+      transform: rotateX(var(--rx)) rotateY(var(--ry)) translateZ(var(--tz));
+      transition: transform .25s var(--ease-2);
+    }
+    .float{
+      position: absolute;
+      will-change: transform, filter, opacity;
+      filter: drop-shadow(0 20px 30px rgba(2,6,23,0.12));
+    }
+    .orb{
+      width: clamp(120px, 22vw, 220px);
+      aspect-ratio: 1/1;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff 10%, rgba(255,255,255,0.6) 20%, rgba(255,255,255,0) 40%), radial-gradient(circle at 60% 60%, rgba(255,255,255,0.55), rgba(255,255,255,0) 50%), radial-gradient(circle at 50% 50%, var(--acc-1), var(--acc-2));
+      animation: floatY 9s ease-in-out infinite;
+    }
+    .chip{
+      width: clamp(160px, 28vw, 320px);
+      height: clamp(90px, 12vw, 160px);
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.65), rgba(255,255,255,0.3)),
+        linear-gradient(135deg, rgba(94,161,255,0.15), rgba(139,108,255,0.15));
+      border: 1px solid rgba(2,6,23,0.07);
+      box-shadow: 0 6px 18px rgba(2,6,23,0.06), 0 24px 54px rgba(2,6,23,0.08);
+      backdrop-filter: blur(4px);
+      animation: floatY 11s ease-in-out infinite reverse;
+    }
+    .tile{
+      width: clamp(140px, 20vw, 260px);
+      height: clamp(140px, 20vw, 260px);
+      border-radius: 20px;
+      background:
+        linear-gradient(140deg, rgba(255,255,255,0.85), rgba(255,255,255,0.5)),
+        linear-gradient(140deg, rgba(94,161,255,0.2), rgba(139,108,255,0.2));
+      border: 1px solid rgba(2,6,23,0.08);
+      box-shadow: 0 6px 18px rgba(2,6,23,0.06), 0 24px 54px rgba(2,6,23,0.08);
+      animation: floatY 10s ease-in-out infinite;
+    }
+    /* Depth (Z translation) for parallax */
+    .z1{ transform: translateZ(60px); }
+    .z2{ transform: translateZ(30px); }
+    .z3{ transform: translateZ(90px); }
+
+    /* Position elements */
+    .orb.one{ left: 8%; top: 14%; }
+    .tile.two{ right: 10%; top: 8%; }
+    .chip.three{ left: 18%; bottom: 12%; }
+    .orb.four{ right: 12%; bottom: 8%; width: clamp(90px, 16vw, 180px); opacity: .9; }
+
+    @keyframes floatY{
+      0%,100% { transform: translate3d(0, 0px, 0); }
+      50%     { transform: translate3d(0, -16px, 0); }
+    }
+
+    /* Work grid */
+    .section-head{
+      display: grid; gap: 8px; margin-bottom: var(--space-4);
+    }
+    .section-head h2{
+      margin: 0;
+      font-size: clamp(24px, 3.5vw, 40px);
+      letter-spacing: -0.02em;
+    }
+    .grid{
+      display: grid;
+      gap: clamp(14px, 1.6vw, 24px);
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .card{
+      grid-column: span 4;
+      position: relative;
+      border-radius: calc(var(--radius) + 2px);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #fff;
+      box-shadow: var(--shadow-1);
+      transform: translateY(0);
+      transition: transform .4s var(--ease-2), box-shadow .4s var(--ease-2);
+    }
+    /* Responsive spans */
+    .card.wide{ grid-column: span 8; }
+    @media (max-width: 1100px){
+      .card, .card.wide{ grid-column: span 6; }
+    }
+    @media (max-width: 720px){
+      .card, .card.wide{ grid-column: 1 / -1; }
+    }
+    .thumb{
+      position: relative;
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      background: linear-gradient(140deg, rgba(94,161,255,0.14), rgba(139,108,255,0.14));
+    }
+    .thumb::before{
+      content: "";
+      position: absolute; inset: -10%;
+      background:
+        radial-gradient(120% 120% at 0% 0%, rgba(94,161,255,0.35) 0%, rgba(94,161,255,0.0) 60%),
+        radial-gradient(140% 120% at 100% 100%, rgba(139,108,255,0.35) 0%, rgba(139,108,255,0.0) 60%),
+        linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.1));
+      transform: scale(1);
+      transition: transform .6s var(--ease-2);
+    }
+    .meta{
+      position: absolute; inset: auto 0 0 0;
+      padding: clamp(16px, 2vw, 22px);
+      background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.92) 40%, rgba(255,255,255,0.98) 100%);
+      transform: translateY(18px);
+      opacity: 0;
+      transition: transform .45s var(--ease-2), opacity .45s var(--ease-2);
+    }
+    .meta h3{
+      margin: 0 0 6px 0;
+      font-size: clamp(16px, 1.6vw, 20px);
+      letter-spacing: -0.01em;
+    }
+    .tags{
+      display: flex; gap: 8px; flex-wrap: wrap; color: var(--muted);
+      font-size: 13px;
+    }
+    .card:hover{ transform: translateY(-3px); box-shadow: var(--shadow-2); }
+    .card:hover .thumb::before{ transform: scale(1.05); }
+    @media (hover: hover){
+      .card:hover .meta{ transform: translateY(0); opacity: 1; }
+    }
+    @media (hover: none){
+      .meta{ opacity: 1; transform: translateY(0); }
+    }
+
+    /* About */
+    .about-wrap{
+      display: grid; gap: var(--space-4);
+      grid-template-columns: 1.1fr .9fr;
+      align-items: start;
+    }
+    @media (max-width: 980px){
+      .about-wrap{ grid-template-columns: 1fr; }
+    }
+    .about-box{
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) + 2px);
+      background: #fff;
+      box-shadow: var(--shadow-1);
+      padding: clamp(18px, 3vw, 28px);
+    }
+    .kpis{
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3);
+      text-align: center;
+    }
+    @media (max-width: 640px){ .kpis{ grid-template-columns: 1fr 1fr; } }
+    .kpis .k{
+      padding: 16px; border-radius: 12px; background: linear-gradient(180deg, rgba(2,6,23,0.02), rgba(2,6,23,0));
+      border: 1px solid var(--border);
+    }
+    .k .num{
+      font-size: clamp(22px, 3.2vw, 32px);
+      font-weight: 800; letter-spacing: -0.03em;
+      background-image: var(--accent); -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .k .lbl{ color: var(--muted); font-size: 13px; }
+
+    /* Contact CTA (replaced masked gradient border with background-clip trick) */
+    .cta-panel{
+      position: relative;
+      border-radius: calc(var(--radius) + 6px);
+      padding: clamp(20px, 4vw, 36px);
+      background:
+        linear-gradient(#fff, #fff) padding-box,
+        linear-gradient(135deg, rgba(94,161,255,0.65), rgba(139,108,255,0.65)) border-box;
+      border: 1px solid transparent; /* lets the gradient show as border */
+      box-shadow: var(--shadow-2);
+      overflow: hidden;
+    }
+
+    /* Reveal on scroll */
+    [data-reveal]{ opacity: 0; transform: translateY(18px) scale(.98); transition: opacity .7s var(--ease-1), transform .7s var(--ease-1); }
+    [data-reveal].is-visible{ opacity: 1; transform: translateY(0) scale(1); }
+
+    /* Footer */
+    footer{ padding: var(--space-4) 0; color: var(--muted); border-top: 1px solid var(--border); }
+
+    /* Loader overlay */
+    .loader{
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(120% 120% at 0% 0%, rgba(94,161,255,.08), transparent 60%),
+        radial-gradient(120% 120% at 100% 100%, rgba(139,108,255,.09), transparent 60%),
+        #fff;
+      transition: opacity .6s var(--ease-2), transform .6s var(--ease-2), visibility .6s var(--ease-2);
+    }
+    .loader.hidden{ opacity: 0; transform: scale(1.02); visibility: hidden; pointer-events: none; }
+    .loader-wrap{ display: grid; place-items: center; gap: 18px; text-align: center; }
+    .loader .logo{ position: relative; width: 96px; height: 96px; display: grid; place-items: center; }
+    .loader .ring{
+      position: absolute; inset: 0;
+      border-radius: 50%;
+      border: 3.5px solid transparent;
+      border-image: conic-gradient(from 0deg, var(--acc-1), var(--acc-2), var(--acc-1)) 1;
+      animation: spin 1.6s linear infinite;
+      filter: drop-shadow(0 10px 24px rgba(99,102,241,.18));
+    }
+    .loader .dot{
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 8px 20px rgba(99,102,241,.28), inset 0 2px 8px rgba(255,255,255,.6);
+      animation: pulse 1.8s var(--ease-2) infinite;
+    }
+    .loader .bar{
+      width: min(60vw, 320px);
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(2,6,23,0.08);
+      overflow: hidden;
+      box-shadow: inset 0 1px 2px rgba(2,6,23,0.05);
+    }
+    .loader .bar i{
+      display: block; height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--acc-1), var(--acc-2));
+      box-shadow: 0 6px 18px rgba(99,102,241,.25);
+      transition: width .2s var(--ease-2);
+    }
+    .loader .sub{
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: .02em;
+    }
+    @keyframes spin{ to{ transform: rotate(360deg); } }
+    @keyframes pulse{
+      0%,100%{ transform: scale(1); }
+      50%{ transform: scale(1.07); }
+    }
+
+    /* Reduced motion respect */
+    @media (prefers-reduced-motion: reduce){
+      * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+      .floating-stage{ transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loader overlay -->
+  <div id="loader" class="loader" aria-live="polite" aria-label="Loading site">
+    <div class="loader-wrap">
+      <div class="logo" aria-hidden="true">
+        <div class="ring"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div>
+      <div class="sub">Launching portfolio…</div>
+    </div>
+  </div>
+
+  <div class="scroll-progress" id="progress"></div>
+
+  <header class="header">
+    <div class="container nav">
+      <div class="brand">
+        <span class="dot" aria-hidden="true"></span>
+        <span>Studio/Your Name</span>
+      </div>
+      <ul>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a class="btn btn-ghost" href="#work">
+          Explore
+          <span class="shine" aria-hidden="true"></span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="home">
+      <div class="container wrap">
+        <div>
+          <div class="eyebrow" data-reveal><span class="bar"></span>Portfolio</div>
+          <h1 data-reveal style="transition-delay:.05s">
+            Designing calm, confident <span class="gradient-text">product experiences</span>.
+          </h1>
+          <p class="lead" data-reveal style="transition-delay:.1s">
+            Ultra‑minimal, high‑polish interfaces with a focus on clarity, balance, and delightful micro‑interactions.
+          </p>
+          <div class="cta-row" data-reveal style="transition-delay:.15s">
+            <a class="btn btn-primary" href="#work">
+              View Selected Work
+              <span class="shine" aria-hidden="true"></span>
+            </a>
+            <a class="btn btn-ghost" href="#contact">
+              Get in touch
+              <span class="shine" aria-hidden="true"></span>
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-visual" id="hero-visual" aria-hidden="true">
+          <div class="floating-stage" id="floating-stage">
+            <div class="float orb one z3"></div>
+            <div class="float tile two z1"></div>
+            <div class="float chip three z2"></div>
+            <div class="float orb four z1"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORK -->
+    <section id="work">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <div class="eyebrow"><span class="bar"></span>Selected Work</div>
+          <h2>Futuristic yet professional interfaces.</h2>
+        </div>
+
+        <div class="grid">
+          <!-- Card 1 -->
+          <article class="card wide" data-reveal>
+            <a href="#" aria-label="Project Alpha — SaaS Dashboard">
+              <div class="thumb"></div>
+              <div class="meta">
+                <h3>Project Alpha — SaaS Dashboard</h3>
+                <div class="tags">Dashboard • Data Viz • Design System</div>
+              </div>
+            </a>
+          </article>
+          <!-- Card 2 -->
+          <article class="card" data-reveal style="transition-delay:.05s">
+            <a href="#" aria-label="E-commerce Product Experience">
+              <div class="thumb"></div>
+              <div class="meta">
+                <h3>E‑commerce Product Experience</h3>
+                <div class="tags">Product • Motion • Conversion</div>
+              </div>
+            </a>
+          </article>
+          <!-- Card 3 -->
+          <article class="card" data-reveal style="transition-delay:.1s">
+            <a href="#" aria-label="Fintech Mobile App">
+              <div class="thumb"></div>
+              <div class="meta">
+                <h3>Fintech Mobile App</h3>
+                <div class="tags">iOS • Accessibility • Onboarding</div>
+              </div>
+            </a>
+          </article>
+          <!-- Card 4 -->
+          <article class="card" data-reveal style="transition-delay:.15s">
+            <a href="#" aria-label="AI Research Tool">
+              <div class="thumb"></div>
+              <div class="meta">
+                <h3>AI Research Tool</h3>
+                <div class="tags">Productivity • Multimodal • Clean UI</div>
+              </div>
+            </a>
+          </article>
+          <!-- Card 5 -->
+          <article class="card" data-reveal style="transition-delay:.2s">
+            <a href="#" aria-label="Brand System">
+              <div class="thumb"></div>
+              <div class="meta">
+                <h3>Brand System</h3>
+                <div class="tags">Identity • Tokens • Consistency</div>
+              </div>
+            </a>
+          </article>
+          <!-- Card 6 -->
+          <article class="card" data-reveal style="transition-delay:.25s">
+            <a href="#" aria-label="Hardware Companion App">
+              <div class="thumb"></div>
+              <div class="meta">
+                <h3>Hardware Companion App</h3>
+                <div class="tags">Bluetooth • Real‑time • Minimal</div>
+              </div>
+            </a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="container">
+        <div class="about-wrap">
+          <div class="about-box" data-reveal>
+            <div class="eyebrow"><span class="bar"></span>About</div>
+            <h2 style="margin:10px 0 12px 0; letter-spacing:-.02em">Fewer elements. Greater intent.</h2>
+            <p style="color:var(--muted); max-width:65ch; margin:0 0 14px 0;">
+              I design interfaces that stay out of the way. Calm visuals, generous spacing, and clear hierarchy—so products feel modern, effortless, and premium.
+            </p>
+            <p style="color:var(--muted); max-width:65ch; margin:0;">
+              From MVPs to full systems, I partner with teams to ship meticulously crafted UI with scalable design tokens, thoughtful motion, and accessible details.
+            </p>
+          </div>
+          <div class="about-box" data-reveal style="transition-delay:.07s">
+            <div class="kpis">
+              <div class="k">
+                <div class="num">9+ yrs</div>
+                <div class="lbl">Experience</div>
+              </div>
+              <div class="k">
+                <div class="num">40+</div>
+                <div class="lbl">Projects shipped</div>
+              </div>
+              <div class="k">
+                <div class="num">A11y</div>
+                <div class="lbl">WCAG‑minded</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <div class="container">
+        <div class="cta-panel" data-reveal>
+          <div class="eyebrow"><span class="bar"></span>Contact</div>
+          <h2 style="margin:10px 0 12px 0; letter-spacing:-.02em">Let’s build something clean and timeless.</h2>
+          <p class="lead" style="margin:0 0 16px 0;">Available for select product and system design work.</p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="mailto:hello@example.com?subject=Project inquiry">
+              Email me
+              <span class="shine" aria-hidden="true"></span>
+            </a>
+            <a class="btn btn-ghost" href="#work">
+              See more work
+              <span class="shine" aria-hidden="true"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container" style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+      <div>© <span id="year"></span> Your Name</div>
+      <div style="display:flex; gap:14px;">
+        <a href="#" style="color:inherit; text-decoration:none;">Twitter</a>
+        <a href="#" style="color:inherit; text-decoration:none;">Dribbble</a>
+        <a href="#" style="color:inherit; text-decoration:none;">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Sexy loader overlay
+    (function(){
+      const loader = document.getElementById('loader');
+      if (!loader) return;
+      const bar = loader.querySelector('.bar i');
+      const barContainer = loader.querySelector('.bar');
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      let progress = 0;
+      let target = 0;
+      let rafId = null;
+
+      const step = () => {
+        progress += (target - progress) * 0.12; // ease towards target
+        const percent = Math.ceil(progress);
+        bar.style.width = percent + '%';
+        barContainer.setAttribute('aria-valuenow', percent);
+        if (progress < 99.5) {
+          rafId = requestAnimationFrame(step);
+        } else {
+          rafId = null;
+        }
+      };
+
+      const bumpTarget = (to) => {
+        target = Math.max(target, to);
+        if (!rafId) rafId = requestAnimationFrame(step);
+      };
+
+      // Simulated progressive bumps so it feels alive before 'load'
+      [180, 420, 900, 1400, 2000].forEach((t, i) => {
+        setTimeout(() => bumpTarget(Math.min(90, 18 + i * 16)), t);
+      });
+
+      // On real load, complete and fade out
+      window.addEventListener('load', () => {
+        bumpTarget(100);
+        setTimeout(() => {
+          loader.classList.add('hidden');
+          setTimeout(() => loader.remove(), 650);
+        }, prefersReduced ? 50 : 250);
+      });
+
+      // Fail-safe: hide after 8s even if 'load' stalls
+      setTimeout(() => {
+        if (!loader.classList.contains('hidden')) {
+          bumpTarget(100);
+          setTimeout(() => {
+            loader.classList.add('hidden');
+            setTimeout(() => loader.remove(), 650);
+          }, 300);
+        }
+      }, 8000);
+    })();
+
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Scroll progress bar
+    (function(){
+      const bar = document.getElementById('progress');
+      const raf = window.requestAnimationFrame;
+      let ticking = false;
+      const update = () => {
+        const st = window.scrollY || document.documentElement.scrollTop;
+        const h = document.documentElement.scrollHeight - window.innerHeight;
+        const p = h > 0 ? (st / h) * 100 : 0;
+        bar.style.width = p + '%';
+        ticking = false;
+      };
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          ticking = true;
+          raf(update);
+        }
+      }, { passive: true });
+      update();
+    })();
+
+    // Reveal on scroll
+    (function(){
+      const items = document.querySelectorAll('[data-reveal]');
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-visible');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.16 });
+      items.forEach(el => io.observe(el));
+    })();
+
+    // Subtle 3D tilt for hero floating elements
+    (function(){
+      const container = document.getElementById('hero-visual');
+      const stage = document.getElementById('floating-stage');
+      if (!container || !stage) return;
+
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const hasHover = window.matchMedia('(hover: hover)').matches;
+
+      if (prefersReduced || !hasHover) return;
+
+      let rect = null;
+      let rx = 0, ry = 0;
+      let currentRx = 0, currentRy = 0;
+      let frame = null;
+
+      const updateRect = () => rect = container.getBoundingClientRect();
+
+      const animate = () => {
+        // Ease to target
+        currentRx += (rx - currentRx) * 0.12;
+        currentRy += (ry - currentRy) * 0.12;
+        stage.style.setProperty('--rx', currentRx.toFixed(2) + 'deg');
+        stage.style.setProperty('--ry', currentRy.toFixed(2) + 'deg');
+        frame = Math.abs(currentRx - rx) > 0.01 || Math.abs(currentRy - ry) > 0.01 ? requestAnimationFrame(animate) : null;
+      };
+
+      const onMove = (e) => {
+        if (!rect) updateRect();
+        const x = (e.clientX - rect.left) / rect.width;  // 0..1
+        const y = (e.clientY - rect.top) / rect.height; // 0..1
+        const maxTilt = 8; // deg
+        ry = ((x - 0.5) * 2) * maxTilt; // rotateY
+        rx = -((y - 0.5) * 2) * maxTilt; // rotateX
+        if (!frame) frame = requestAnimationFrame(animate);
+      };
+
+      const onLeave = () => {
+        rx = 0; ry = 0;
+        if (!frame) frame = requestAnimationFrame(animate);
+      };
+
+      window.addEventListener('resize', updateRect);
+      container.addEventListener('pointerenter', updateRect);
+      container.addEventListener('pointermove', onMove);
+      container.addEventListener('pointerleave', onLeave);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Elegant Luxury — Atelier</title>
+  <meta name="description" content="A luxurious, high-end homepage with a soft cream and gold palette, elegant serif typography, textured hero, and smooth fading portfolio." />
+  <meta name="theme-color" content="#FAF7F2">
+  <meta property="og:title" content="Elegant Luxury — Atelier">
+  <meta property="og:description" content="Soft cream and gold palette, serif headlines, abstract textures, and smooth portfolio reveals.">
+  <meta property="og:type" content="website">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============= Variables & Base ============= */
+    :root{
+      --cream: #FAF7F2;
+      --cream-2: #F3EEE6;
+      --ink: #22211F;
+      --soft-ink: #4A4742;
+      --gold: #C6A15B;
+      --gold-2: #E2C995;
+      --gold-3: #9C7B3D;
+      --line: rgba(0,0,0,.08);
+      --shadow: 0 10px 30px rgba(0,0,0,.08);
+      --radius: 14px;
+      --maxw: 1200px;
+      --ease: cubic-bezier(.2,.7,.2,1);
+    }
+    * { box-sizing: border-box }
+    html { scroll-behavior: smooth }
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    h1,h2,h3 {
+      font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      line-height: 1.08;
+      margin: 0 0 .6em;
+      color: var(--ink);
+    }
+    p { margin: 0 0 1.1em; color: var(--soft-ink) }
+    a { color: inherit; text-decoration: none }
+    img { max-width: 100%; display: block }
+
+    ::selection { background: #E9D9B1; color: #1A1A18 }
+
+    /* Containers */
+    .container { width: calc(100% - 2rem); max-width: var(--maxw); margin-inline: auto }
+
+    /* ============= Top Navigation ============= */
+    header.nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 50;
+      padding: 18px 0;
+      background: color-mix(in oklab, var(--cream) 80%, white 20%);
+      backdrop-filter: blur(6px) saturate(120%);
+      -webkit-backdrop-filter: blur(6px) saturate(120%);
+      border-bottom: 1px solid rgba(0,0,0,.06);
+    }
+    .nav__row {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(22px, 2.2vw, 30px);
+      letter-spacing: .06em;
+    }
+    .brand em {
+      background: linear-gradient(100deg, var(--gold), var(--gold-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .nav__links { display: flex; gap: 22px; align-items: center }
+    .nav__links a {
+      font-size: 14px; letter-spacing: .16em; text-transform: uppercase;
+      color: #2B2A26; opacity: .85;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 6px;
+      transition: opacity .25s var(--ease), border-color .25s var(--ease);
+    }
+    .nav__links a:hover, .nav__links a:focus-visible {
+      opacity: 1; border-color: var(--gold);
+      outline: none;
+    }
+
+    /* ============= Hero ============= */
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      display: grid; align-items: center;
+      padding: clamp(90px, 8vw, 120px) 0 clamp(60px, 6vw, 100px);
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .hero::before {
+      /* Abstract textures using layered gradients */
+      content: "";
+      position: absolute;
+      inset: -12% -8% -8% -8%;
+      background:
+        radial-gradient(1200px 800px at 15% 10%, rgba(198,161,91,.18), transparent 60%),
+        radial-gradient(900px 600px at 85% 12%, rgba(154,121,64,.12), transparent 58%),
+        radial-gradient(1100px 700px at 80% 90%, rgba(226,201,149,.18), transparent 62%),
+        radial-gradient(800px 400px at 25% 85%, rgba(214,191,135,.12), transparent 58%),
+        linear-gradient(180deg, rgba(255,255,255,.85), rgba(250,247,242,1) 30%, rgba(239,232,222,.9) 85%, rgba(230,222,210,.85));
+      filter: saturate(.95) contrast(1.02);
+      z-index: -2;
+    }
+    .hero::after {
+      /* Subtle grain using an inline SVG turbulence */
+      content: "";
+      position: absolute; inset: 0;
+      opacity: .06;
+      z-index: -1;
+      background-size: 160px 160px;
+      background-image: url('data:image/svg+xml;utf8,\
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">\
+  <filter id="n">\
+    <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="2" stitchTiles="stitch"/>\
+  </filter>\
+  <rect width="100%" height="100%" filter="url(%23n)" opacity="0.9"/>\
+</svg>');
+      pointer-events: none;
+    }
+    .hero__grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(24px, 4vw, 40px) }
+    .hero__eyebrow {
+      font-size: 13px; letter-spacing: .26em; text-transform: uppercase; color: #4B473F;
+    }
+    .hero h1 {
+      font-size: clamp(40px, 6.5vw, 86px);
+      margin: .2em 0 .3em;
+    }
+    .hero h1 .gold {
+      background: linear-gradient(100deg, #8C6C3C, var(--gold) 40%, var(--gold-2) 70%, #8C6C3C);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero__copy { font-size: clamp(16px, 1.6vw, 18px); max-width: 38ch }
+    .hero__cta { margin-top: clamp(16px, 2.2vw, 26px); display: flex; gap: 14px; align-items: center; flex-wrap: wrap }
+
+    .btn {
+      position: relative; display: inline-flex; align-items: center; justify-content: center;
+      padding: 14px 22px; border-radius: 999px;
+      font-size: 13px; letter-spacing: .22em; text-transform: uppercase;
+      border: 1px solid #D6C6A1; gap: 10px;
+      transition: transform .5s var(--ease), box-shadow .5s var(--ease), background .5s var(--ease), color .4s var(--ease);
+      will-change: transform;
+    }
+    .btn--gold {
+      background: linear-gradient(180deg, var(--gold-2), var(--gold) 80%);
+      color: #1E1B16;
+      box-shadow: 0 8px 22px rgba(198,161,91,.28), inset 0 1px 0 rgba(255,255,255,.4);
+      border-color: rgba(140,108,60,.35);
+    }
+    .btn--gold:hover { transform: translateY(-1px); box-shadow: 0 14px 34px rgba(140,108,60,.28) }
+    .btn--gold::after {
+      content:""; position: absolute; inset: 0; border-radius: 999px; pointer-events: none;
+      background: linear-gradient(100deg, transparent 40%, rgba(255,255,255,.5) 50%, transparent 60%);
+      transform: translateX(-140%) skewX(-20deg);
+      transition: transform .9s var(--ease);
+      mix-blend-mode: screen;
+    }
+    .btn--gold:hover::after { transform: translateX(140%) skewX(-20deg) }
+    .btn--ghost {
+      background: transparent; color: #2B2A26;
+      border-color: #CFC6B4;
+    }
+    .btn--ghost:hover { background: rgba(255,255,255,.65) }
+
+    .hero__panel {
+      align-self: center;
+      background: color-mix(in oklab, var(--cream) 70%, white 30%);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: clamp(18px, 2.4vw, 26px);
+      box-shadow: var(--shadow);
+    }
+    .hero__panel h3 {
+      font-size: clamp(20px, 2.2vw, 26px);
+      margin-bottom: .4em;
+    }
+    .hero__panel p { font-size: 15px }
+    .hero__meta { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; color: #6A665F; font-size: 13px }
+    .hero__meta span { display: inline-flex; align-items: center; gap: 8px }
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff, var(--gold-2));
+      box-shadow: 0 0 0 1px rgba(156,123,61,.25);
+    }
+
+    .scroll-cue {
+      position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%);
+      font-size: 12px; letter-spacing: .3em; text-transform: uppercase; color: #5C584F;
+      display: inline-flex; align-items: center; gap: 10px;
+      cursor: default;
+    }
+    .scroll-cue .line {
+      height: 22px; width: 2px; background: #CDBB97; border-radius: 2px;
+      animation: drop 1.8s var(--ease) infinite;
+    }
+    @keyframes drop {
+      0% { transform: scaleY(0); opacity:.2 }
+      40% { transform: scaleY(1); opacity:1 }
+      100% { transform: scaleY(0); opacity:.2 }
+    }
+
+    /* ============= Section Base ============= */
+    section { padding: clamp(60px, 9vw, 120px) 0; position: relative }
+    .section__head { margin-bottom: clamp(22px, 4vw, 36px) }
+    .eyebrow {
+      font-size: 12px; letter-spacing: .28em; text-transform: uppercase; color: #6B665E;
+      margin-bottom: 10px;
+    }
+    .headline { font-size: clamp(28px, 4.2vw, 48px); max-width: 22ch }
+    .subhead { color: var(--soft-ink); max-width: 56ch }
+
+    /* ============= Portfolio Grid ============= */
+    .portfolio__grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: clamp(12px, 1.8vw, 22px);
+    }
+    .card {
+      grid-column: span 4;
+      display: grid; border-radius: 18px; overflow: hidden;
+      background: #F6F1E8;
+      border: 1px solid rgba(0,0,0,.06);
+      transform: translateZ(0);
+      position: relative;
+      transition: box-shadow .5s var(--ease), transform .5s var(--ease);
+    }
+    .card:hover { box-shadow: 0 24px 60px rgba(0,0,0,.10); transform: translateY(-2px) }
+    .card__img {
+      aspect-ratio: 4 / 3; position: relative; overflow: hidden;
+      background: var(--img, radial-gradient(1200px 600px at 20% 30%, rgba(198,161,91,.25), transparent 60%), linear-gradient(180deg, #EEE5D6, #F8F3EA));
+    }
+    .card__img::after {
+      /* Gentle vignette */
+      content:""; position: absolute; inset:0;
+      background: radial-gradient(120% 90% at 50% 60%, transparent 45%, rgba(0,0,0,.06) 88%);
+      mix-blend-mode: multiply;
+      pointer-events: none;
+    }
+    .card__body {
+      padding: 18px 18px 20px;
+      display: grid; gap: 6px;
+      background: linear-gradient(180deg, #fff, #FBF7EF);
+    }
+    .card__title {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(18px, 1.8vw, 22px);
+      letter-spacing: .02em;
+    }
+    .card__meta { display: flex; align-items: center; justify-content: space-between; gap: 12px }
+    .badge {
+      font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: #5D5A54;
+    }
+    .link {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 12px; letter-spacing: .18em; text-transform: uppercase;
+      color: #3C372F;
+    }
+    .link .chev {
+      width: 26px; height: 26px; border-radius: 999px;
+      background: linear-gradient(180deg, var(--gold-2), var(--gold));
+      display: grid; place-items: center;
+      box-shadow: 0 6px 14px rgba(198,161,91,.28), inset 0 1px 0 rgba(255,255,255,.45);
+      transition: transform .45s var(--ease);
+    }
+    .card:hover .link .chev { transform: translateX(2px) }
+    .chev svg { width: 12px; height: 12px; color: #221F19 }
+
+    /* Image variants (abstract textures) */
+    .card--1 .card__img { --img:
+      radial-gradient(900px 600px at 20% 35%, rgba(212,175,55,.25), transparent 60%),
+      radial-gradient(700px 500px at 80% 20%, rgba(156,123,61,.22), transparent 60%),
+      linear-gradient(140deg, #EFE7DA 10%, #F7F1E7 60%, #F1E8DB) }
+    .card--2 .card__img { --img:
+      radial-gradient(1100px 700px at 70% 70%, rgba(226,201,149,.25), transparent 62%),
+      radial-gradient(900px 700px at 15% 15%, rgba(140,108,60,.18), transparent 60%),
+      linear-gradient(120deg, #EEE5D8, #FAF6EE) }
+    .card--3 .card__img { --img:
+      radial-gradient(1000px 700px at 30% 70%, rgba(198,161,91,.24), transparent 60%),
+      radial-gradient(900px 600px at 70% 25%, rgba(139,108,58,.16), transparent 58%),
+      linear-gradient(180deg, #F5EDDF, #FBF6ED) }
+    .card--4 .card__img { --img:
+      radial-gradient(900px 600px at 24% 42%, rgba(215,191,135,.25), transparent 60%),
+      radial-gradient(800px 500px at 80% 22%, rgba(178,142,78,.16), transparent 58%),
+      linear-gradient(150deg, #EFE6DA, #FAF5EC) }
+    .card--5 .card__img { --img:
+      radial-gradient(900px 600px at 18% 18%, rgba(204,173,112,.24), transparent 60%),
+      radial-gradient(800px 600px at 82% 76%, rgba(139,108,58,.18), transparent 58%),
+      linear-gradient(100deg, #F4EBDE, #FCF7EE) }
+    .card--6 .card__img { --img:
+      radial-gradient(900px 600px at 76% 22%, rgba(214,191,135,.25), transparent 62%),
+      radial-gradient(800px 600px at 20% 70%, rgba(146,115,66,.18), transparent 60%),
+      linear-gradient(160deg, #F2E9DC, #FCF6ED) }
+
+    /* ============= About/Statement ============= */
+    .statement {
+      background: conic-gradient(from 180deg at 50% 120%, rgba(198,161,91,.08), transparent 30%),
+                  linear-gradient(180deg, #FFF, #FAF6EE);
+      border-top: 1px solid rgba(0,0,0,.06);
+      border-bottom: 1px solid rgba(0,0,0,.06);
+    }
+    .statement .box {
+      background: color-mix(in oklab, var(--cream) 72%, white 28%);
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: var(--radius);
+      padding: clamp(22px, 3vw, 30px);
+      box-shadow: var(--shadow);
+    }
+    .statement .box p {
+      font-size: clamp(18px, 1.9vw, 22px);
+      color: #3F3B34;
+    }
+
+    /* ============= Footer ============= */
+    footer {
+      padding: 40px 0 60px;
+      border-top: 1px solid rgba(0,0,0,.06);
+      background: linear-gradient(180deg, #FBF7EF, #F7F1E8);
+    }
+    .foot {
+      display: grid; gap: 20px; align-items: center;
+      grid-template-columns: 1fr auto;
+    }
+    .foot .brand { font-size: 22px }
+    .foot .social { display: flex; gap: 12px }
+    .social a {
+      width: 38px; height: 38px; border-radius: 999px;
+      border: 1px solid #D7CEBE; display: grid; place-items: center;
+      background: linear-gradient(180deg, #fff, #F8F3EA);
+      transition: transform .35s var(--ease), box-shadow .35s var(--ease);
+    }
+    .social a:hover { transform: translateY(-1px); box-shadow: 0 10px 20px rgba(0,0,0,.08) }
+
+    /* ============= Reveal on Scroll ============= */
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .9s var(--ease), transform .9s var(--ease) }
+    .is-visible { opacity: 1; transform: translateY(0) }
+
+    /* ============= Responsiveness ============= */
+    @media (max-width: 920px){
+      .hero__grid { grid-template-columns: 1fr; }
+      .hero__panel { order: -1; margin-bottom: 18px }
+      .portfolio__grid .card { grid-column: span 6 }
+      .nav__links { display: none }
+    }
+    @media (max-width: 640px){
+      .portfolio__grid .card { grid-column: span 12 }
+      .scroll-cue { display: none }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      html { scroll-behavior: auto }
+      .btn--gold::after, .scroll-cue .line { animation: none; transition: none }
+      .reveal { opacity: 1; transform: none }
+    }
+    /* Focus ring */
+    :focus-visible { outline: 2px solid color-mix(in oklab, var(--gold) 60%, #000 10%); outline-offset: 2px }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <header class="nav" role="banner">
+    <div class="container nav__row">
+      <a class="brand" href="#top" aria-label="Atelier home"><strong>Atelier <em>Aurelia</em></strong></a>
+      <nav class="nav__links" aria-label="Primary">
+        <a href="#portfolio">Portfolio</a>
+        <a href="#about">Studio</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <main id="top" class="hero" role="main" aria-label="Hero">
+    <div class="container hero__grid">
+      <div>
+        <div class="hero__eyebrow">Timeless Aesthetics</div>
+        <h1>
+          The Art of <span class="gold">Subtle Luxury</span>
+        </h1>
+        <p class="hero__copy">
+          Where understated elegance meets modern precision. We craft refined brand experiences with an attention to detail worthy of the world’s most discerning audiences.
+        </p>
+        <div class="hero__cta">
+          <a class="btn btn--gold" href="#portfolio" aria-label="Explore the portfolio">Explore Portfolio</a>
+          <a class="btn btn--ghost" href="#about">About the Studio</a>
+        </div>
+      </div>
+
+      <aside class="hero__panel" aria-label="Highlights">
+        <h3>Considered Design, Distinct Presence</h3>
+        <p>Elegant serif typography, tactile textures, and a restrained palette yield a visual language that whispers luxury.</p>
+        <div class="hero__meta">
+          <span><span class="dot"></span> Brand Identity</span>
+          <span><span class="dot"></span> Editorial</span>
+          <span><span class="dot"></span> Digital</span>
+        </div>
+      </aside>
+    </div>
+
+    <div class="scroll-cue" aria-hidden="true">
+      <span>Scroll</span>
+      <span class="line"></span>
+    </div>
+  </main>
+
+  <!-- Portfolio -->
+  <section id="portfolio" aria-labelledby="portfolio-title">
+    <div class="container">
+      <div class="section__head">
+        <div class="eyebrow">Portfolio</div>
+        <h2 id="portfolio-title" class="headline">A curated selection of recent work</h2>
+        <p class="subhead">A blend of tactile nuance and digital clarity — revealing each brand’s quiet confidence.</p>
+      </div>
+
+      <div class="portfolio__grid">
+        <!-- Card 1 -->
+        <article class="card card--1 reveal" aria-label="Maison Solenne — Brand Identity">
+          <div class="card__img" role="img" aria-label="Abstract gold texture resembling brushed metal"></div>
+          <div class="card__body">
+            <h3 class="card__title">Maison Solenne</h3>
+            <div class="card__meta">
+              <span class="badge">Brand Identity</span>
+              <a href="#" class="link" aria-label="View Maison Solenne details">
+                View
+                <span class="chev" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M8 5l8 7-8 7"/>
+                  </svg>
+                </span>
+              </a>
+            </div>
+          </div>
+        </article>
+        <!-- Card 2 -->
+        <article class="card card--2 reveal" aria-label="L’Atelier Noir — Editorial System">
+          <div class="card__img" role="img" aria-label="Soft cream with gold gradients forming abstract folds"></div>
+          <div class="card__body">
+            <h3 class="card__title">L’Atelier Noir</h3>
+            <div class="card__meta">
+              <span class="badge">Editorial</span>
+              <a href="#" class="link" aria-label="View L’Atelier Noir details">
+                View
+                <span class="chev" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M8 5l8 7-8 7"/>
+                  </svg>
+                </span>
+              </a>
+            </div>
+          </div>
+        </article>
+        <!-- Card 3 -->
+        <article class="card card--3 reveal" aria-label="Éclat & Co. — Digital Experience">
+          <div class="card__img" role="img" aria-label="Cream tones with subtle gold halos"></div>
+          <div class="card__body">
+            <h3 class="card__title">Éclat &amp; Co.</h3>
+            <div class="card__meta">
+              <span class="badge">Digital</span>
+              <a href="#" class="link" aria-label="View Éclat & Co. details">
+                View
+                <span class="chev" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M8 5l8 7-8 7"/>
+                  </svg>
+                </span>
+              </a>
+            </div>
+          </div>
+        </article>
+        <!-- Card 4 -->
+        <article class="card card--4 reveal" aria-label="Studio Aureline — Packaging">
+          <div class="card__img" role="img" aria-label="Abstract texture with warm gold gradients"></div>
+          <div class="card__body">
+            <h3 class="card__title">Studio Aureline</h3>
+            <div class="card__meta">
+              <span class="badge">Packaging</span>
+              <a href="#" class="link" aria-label="View Studio Aureline details">
+                View
+                <span class="chev" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M8 5l8 7-8 7"/>
+                  </svg>
+                </span>
+              </a>
+            </div>
+          </div>
+        </article>
+        <!-- Card 5 -->
+        <article class="card card--5 reveal" aria-label="Vérité — Brand System">
+          <div class="card__img" role="img" aria-label="Soft gradients forming elegant, minimal waves"></div>
+          <div class="card__body">
+            <h3 class="card__title">Vérité</h3>
+            <div class="card__meta">
+              <span class="badge">Brand System</span>
+              <a href="#" class="link" aria-label="View Vérité details">
+                View
+                <span class="chev" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M8 5l8 7-8 7"/>
+                  </svg>
+                </span>
+              </a>
+            </div>
+          </div>
+        </article>
+        <!-- Card 6 -->
+        <article class="card card--6 reveal" aria-label="Nocturne — Web Experience">
+          <div class="card__img" role="img" aria-label="Cream backdrop with gold luminance"></div>
+          <div class="card__body">
+            <h3 class="card__title">Nocturne</h3>
+            <div class="card__meta">
+              <span class="badge">Web Experience</span>
+              <a href="#" class="link" aria-label="View Nocturne details">
+                View
+                <span class="chev" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M8 5l8 7-8 7"/>
+                  </svg>
+                </span>
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statement / About -->
+  <section id="about" class="statement" aria-labelledby="about-title">
+    <div class="container">
+      <div class="section__head">
+        <div class="eyebrow">Studio</div>
+        <h2 id="about-title" class="headline">Design with a cultivated sensibility</h2>
+      </div>
+      <div class="box reveal">
+        <p>
+          Guided by restraint, we favor forms that endure. Our work balances clarity and charisma, weaving together typography, tactility, and narrative to create brands that feel inevitable.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" aria-labelledby="contact-title">
+    <div class="container">
+      <div class="section__head">
+        <div class="eyebrow">Inquiries</div>
+        <h2 id="contact-title" class="headline">Begin your next chapter</h2>
+        <p class="subhead">For collaborations and commissions, we welcome introductions.</p>
+      </div>
+      <div class="reveal" style="display:flex; gap:12px; flex-wrap:wrap">
+        <a class="btn btn--gold" href="mailto:studio@example.com">Email the Studio</a>
+        <a class="btn btn--ghost" href="#portfolio">View Work</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer role="contentinfo">
+    <div class="container foot">
+      <div>
+        <div class="brand"><strong>Atelier <em>Aurelia</em></strong></div>
+        <small style="color:#6F6B63;">© <span id="year"></span> All rights reserved.</small>
+      </div>
+      <div class="social" aria-label="Social links">
+        <a href="#" aria-label="Instagram" title="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3B3328" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><path d="M17.5 6.5h.01"/></svg>
+        </a>
+        <a href="#" aria-label="Dribbble" title="Dribbble">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3B3328" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M8 3.5c4 4 7 9 8.5 15"/><path d="M3.5 9.5C8 9 16 8.5 20.5 10"/><path d="M5 18c3.5-3 8-4.5 14-4"/></svg>
+        </a>
+        <a href="#" aria-label="Behance" title="Behance">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3B3328" stroke-width="1.6"><path d="M4 7h5.5a3 3 0 0 1 0 6H4z"/><path d="M4 13h6a3 3 0 0 1 0 6H4z"/><path d="M15 9h6"/><path d="M14 19c.5-3 2.5-5 5-5s4.5 2 5 5"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Reveal on scroll
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.18, rootMargin: "0px 0px -40px 0px" });
+
+    document.querySelectorAll('.reveal, .card').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

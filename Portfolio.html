@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfolio — Hud Ahmad</title>
+  <meta name="description" content="Hud Ahmad — portfolio, projects, and highlights." />
+  <meta name="theme-color" content="#0A84FF" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --primary:#0A84FF;
+      --accent:#5E5CE6;
+      --ink:#1C1C1E;
+      --muted:#3A3A3C;
+      --page:#F5F5F7;
+      --page-bg: var(--page);
+      --r:18px;
+      --container: min(1200px,92vw);
+      --shadow-1:0 10px 30px rgba(28,28,30,.10);
+      --shadow-2:0 16px 36px rgba(10,132,255,.22);
+      --ease:cubic-bezier(.22,1,.36,1);
+      --fast:180ms var(--ease);
+      --slow:520ms var(--ease);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0; color:var(--ink);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background: var(--page);
+      overflow-x:hidden;
+      display:flex; flex-direction:column; min-height:100vh;
+    }
+    a{color:inherit; text-decoration:none}
+    .container{width:var(--container); margin-inline:auto}
+
+    /* Glass */
+    .glass{
+      background:rgba(255,255,255,.58);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border:1px solid rgba(255,255,255,.55);
+      border-radius:var(--r);
+      box-shadow:var(--shadow-1);
+      transition: background var(--fast), transform var(--fast), box-shadow var(--fast);
+    }
+    .glass:hover{ background:rgba(255,255,255,.64) }
+
+    /* Buttons */
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:12px 16px; border-radius:12px; font-weight:700; cursor:pointer;
+      transition:transform var(--fast), box-shadow var(--fast), background var(--fast);
+      border:1px solid rgba(255,255,255,.55);
+      background:linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,.5));
+      color:var(--ink);
+    }
+    .btn:hover{ transform:translateY(-1px); box-shadow:var(--shadow-1) }
+    .btn-primary{
+      color:#fff;
+      background:linear-gradient(90deg, var(--primary), var(--accent));
+      box-shadow:0 10px 24px rgba(10,132,255,.28), inset 0 0 0 1px rgba(255,255,255,.35);
+      animation: btnPulse 3s ease-in-out infinite;
+    }
+    .btn-small{ padding:9px 12px; font-size:14px }
+    @keyframes btnPulse{
+      0%,100%{ filter:none }
+      50%{ filter: drop-shadow(0 0 10px rgba(10,132,255,.35)) }
+    }
+
+    /* Topbar (centered nav) */
+    .topbar-wrap{position:sticky; top:16px; z-index:60}
+    .topbar{
+      display:grid; grid-template-columns:max-content 1fr max-content;
+      align-items:center; height:64px; padding:0 14px;
+      position:relative;
+    }
+    .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.3px}
+    .badge{width:36px; height:36px; border-radius:12px; background:linear-gradient(135deg,var(--primary),var(--accent)); box-shadow:0 8px 18px rgba(10,132,255,.25)}
+    .nav{
+      justify-self:center;
+      display:flex; gap:12px; align-items:center; flex-wrap:wrap; justify-content:center;
+      padding:6px 10px; border-radius:12px;
+    }
+    .nav a{
+      position:relative; padding:8px 12px; border-radius:10px; font-weight:700;
+      transition:color var(--fast), background var(--fast);
+    }
+    .nav a:hover{ color:var(--primary); background:rgba(255,255,255,.55) }
+    .nav a::after{
+      content:""; position:absolute; left:10px; right:10px; bottom:4px; height:2px;
+      background:linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius:2px; transform:scaleX(0); transform-origin:center; transition: transform var(--fast);
+    }
+    .nav a:hover::after{ transform:scaleX(1) }
+    .brand-ghost{ visibility:hidden }
+
+    /* Mobile hamburger toggle button */
+    .nav-toggle{
+      display:none;
+      align-items:center; justify-content:center;
+      width:44px; height:44px;
+      padding:0; border-radius:12px; cursor:pointer; z-index:61;
+      border:1px solid rgba(255,255,255,.55);
+      background:linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,.5));
+      box-shadow:var(--shadow-1);
+      position:absolute; left:14px; top:50%; transform:translateY(-50%);
+      transition: transform var(--fast), box-shadow var(--fast), background var(--fast);
+    }
+    .nav-toggle:hover{ transform:translateY(calc(-50% - 1px)); box-shadow:var(--shadow-1) }
+    .nav-toggle .bar{
+      width:20px; height:2px; background:var(--ink); border-radius:2px; display:block; margin:3px 0;
+      transition: transform var(--fast), opacity var(--fast);
+    }
+    .nav-toggle[aria-expanded="true"] .bar:nth-child(1){ transform: translateY(5px) rotate(45deg) }
+    .nav-toggle[aria-expanded="true"] .bar:nth-child(2){ opacity:0 }
+    .nav-toggle[aria-expanded="true"] .bar:nth-child(3){ transform: translateY(-5px) rotate(-45deg) }
+
+    /* Hero */
+    main{ flex:1 }
+    .hero{display:grid; grid-template-columns:1.1fr .9fr; gap:24px; padding:36px 0 10px; align-items:center}
+    .title-card{
+      display:inline-block; padding:18px 20px; border-radius:22px; position:relative;
+      overflow:hidden;
+    }
+    .title-card::after{
+      content:""; position:absolute; inset:-40% -140% 40% -140%;
+      background:linear-gradient(120deg, transparent, rgba(255,255,255,.6), transparent);
+      transform:rotate(12deg) translateX(-50%);
+      animation: cardShine 7s var(--ease) infinite;
+      pointer-events:none;
+    }
+    @keyframes cardShine{
+      0%{ transform:rotate(12deg) translateX(-120%) }
+      50%{ transform:rotate(12deg) translateX(20%) }
+      100%{ transform:rotate(12deg) translateX(120%) }
+    }
+    .hero h1{
+      margin:0; font-family:Poppins,Inter,sans-serif;
+      font-size: clamp(40px, 6vw, 64px);
+      line-height:1.02;
+      background: linear-gradient(120deg, var(--ink), var(--primary) 40%, var(--accent) 70%, var(--ink) 95%);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      background-size:200% 100%; animation: shimmer 14s ease infinite;
+    }
+    @keyframes shimmer{0%{background-position:0 0} 50%{background-position:100% 0} 100%{background-position:0 0}}
+    .hero p{margin:10px 0 0; color:var(--muted)}
+    .hero-ctas{display:flex; gap:12px; flex-wrap:wrap; margin-top:14px}
+    .hero-art{
+      height:clamp(220px, 34vw, 360px); border-radius:24px; margin-left:auto; overflow:hidden;
+      display:grid; place-items:center; border:1px solid rgba(255,255,255,.55);
+      background:rgba(255,255,255,.62);
+      position:relative; animation: float 9s ease-in-out infinite;
+    }
+    @keyframes float{ 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-8px) } }
+    .ring,.ring2,.ring3{
+      position:absolute; border-radius:50%; border:2px solid transparent;
+      border-top-color:rgba(10,132,255,.65); border-left-color:rgba(94,92,230,.55); border-right-color:rgba(255,255,255,.35);
+      filter: drop-shadow(0 10px 28px rgba(10,132,255,.18));
+    }
+    .ring{width:80%; height:80%; animation:spinA 12s linear infinite}
+    .ring2{width:60%; height:60%; animation:spinB 10s linear infinite}
+    .ring3{width:40%; height:40%; animation:spinC 8s linear infinite}
+    @keyframes spinA{to{transform:rotate(360deg)}}
+    @keyframes spinB{to{transform:rotate(-360deg)}}
+    @keyframes spinC{to{transform:rotate(360deg)}}
+    @media (max-width:960px){
+      .hero{grid-template-columns:1fr; text-align:center}
+      .hero-art{margin:16px auto 0}
+      .hero-ctas{justify-content:center}
+      .topbar{grid-template-columns:1fr}
+      .brand, .brand-ghost{display:none}
+      .nav{justify-self:center}
+      .nav{
+        display:none;
+        position:absolute; left:12px; right:12px; top:calc(100% + 10px);
+        flex-direction:column; gap:6px; padding:10px;
+        background:rgba(255,255,255,.86);
+        backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+        border:1px solid rgba(255,255,255,.55); border-radius:12px;
+        box-shadow:var(--shadow-1);
+        z-index:60;
+      }
+      .nav.is-open{ display:flex }
+      .nav a{ padding:10px 12px; border-radius:10px }
+      .nav-toggle{ display:inline-flex }
+    }
+
+    h2,h3{font-family:Poppins,Inter,sans-serif; margin:0 0 10px}
+    .center{text-align:center}
+
+    /* Projects grid (concepts) */
+    .projects{margin:18px 0 0}
+    .grid{
+      display:grid; gap:18px;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    }
+    .card{overflow:hidden; transition: transform var(--fast), box-shadow var(--fast)}
+    .card:hover{ transform: translateY(-4px); box-shadow: var(--shadow-2) }
+    .media{
+      aspect-ratio:16/9; border-radius:14px; background:#fff;
+      display:grid; place-items:center; color:#6e6e73; font-weight:700; position:relative;
+    }
+    .body{padding:14px}
+    .title{font-weight:800; margin-bottom:6px}
+    .desc{font-size:14px; color:var(--muted)}
+    .tags{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 12px}
+    .tag{font-size:12px; font-weight:700; padding:6px 10px; border-radius:10px; background:rgba(255,255,255,.7); border:1px solid rgba(0,0,0,.06)}
+    .actions{display:flex; gap:10px; flex-wrap:wrap}
+
+    /* Featured Highlights — centered */
+    .featured{margin:34px 0 0}
+    .rail{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
+      justify-content: center;
+      gap:16px;
+      margin-top:10px;
+    }
+    .feature-card{padding:16px; border-radius:16px; transition: transform var(--fast), box-shadow var(--fast)}
+    .feature-card:hover{ transform: translateY(-4px); box-shadow: var(--shadow-2) }
+    .feature-card h4{margin:0 0 6px}
+    .feature-card p{margin:0; color:var(--muted)}
+
+    /* Contact — centered card */
+    #contact{
+      max-width: 980px;
+      margin: 30px auto 0 !important;
+    }
+    .pad{padding:18px}
+    .input{height:44px; padding:0 14px; width:100%; border-radius:12px; border:1px solid rgba(0,0,0,.08); background:rgba(255,255,255,.92); outline:none}
+    textarea.input{height:auto; padding:12px 14px}
+
+    /* Reveal on scroll */
+    .reveal{opacity:0; transform:translateY(18px); filter:blur(6px)}
+    .reveal.in{animation:fadeUp 700ms var(--ease) forwards}
+    @keyframes fadeUp{
+      0%{opacity:0; transform:translateY(18px); filter:blur(6px)}
+      100%{opacity:1; transform:translateY(0); filter:blur(0)}
+    }
+
+    /* ===== New Loader: Glass Equalizer ===== */
+    .loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(90% 80% at 10% 10%, rgba(10,132,255,.08), transparent 60%),
+        radial-gradient(80% 75% at 90% 20%, rgba(94,92,230,.08), transparent 60%),
+        var(--page-bg);
+      opacity: 1;
+      transform: none;
+      visibility: visible;
+      transition: opacity 600ms var(--ease), transform 600ms var(--ease), visibility 600ms var(--ease);
+    }
+    body.is-loaded .loader {
+      opacity: 0;
+      transform: scale(.98);
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    .loader-card{
+      position: relative;
+      width: 240px;
+      padding: 22px 18px 18px;
+      border-radius: 20px;
+      overflow: hidden;
+      text-align: center;
+      background: rgba(255,255,255,.58);
+      border:1px solid rgba(255,255,255,.55);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: var(--shadow-1);
+    }
+    .loader-card::after{
+      content:"";
+      position:absolute; inset:-40% -140% 40% -140%;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,.6), transparent);
+      transform: rotate(12deg) translateX(-120%);
+      animation: cardShine 7s var(--ease) infinite;
+      pointer-events:none;
+      z-index: 1;
+    }
+    .aurora{
+      position:absolute; inset:-30%;
+      background:
+        radial-gradient(70% 60% at 20% 30%, rgba(10,132,255,.18), transparent 60%),
+        radial-gradient(60% 55% at 80% 20%, rgba(94,92,230,.18), transparent 60%),
+        radial-gradient(65% 70% at 50% 85%, rgba(10,132,255,.12), transparent 70%);
+      filter: blur(22px);
+      animation: auroraMove 10s ease-in-out infinite;
+      z-index: 0;
+    }
+    @keyframes auroraMove{
+      0%,100%{ transform: translate3d(0,0,0) rotate(0deg) }
+      50%{ transform: translate3d(6px,-8px,0) rotate(4deg) }
+    }
+
+    .equalizer{
+      position:relative;
+      display:flex; align-items:flex-end; justify-content:center;
+      gap:10px; height:84px; margin-top:4px;
+      z-index: 2;
+    }
+    .equalizer .bar{
+      width:10px; height:64px;
+      border-radius:10px;
+      background: linear-gradient(180deg, var(--primary), var(--accent));
+      box-shadow: 0 10px 22px rgba(10,132,255,.26), inset 0 0 0 1px rgba(255,255,255,.35);
+      transform-origin:50% 100%;
+      transform: scaleY(.35);
+      animation: equalize 1.15s ease-in-out infinite;
+      will-change: transform, filter;
+      filter: saturate(115%);
+    }
+    @keyframes equalize{
+      0%,100%{ transform: scaleY(.35) }
+      20%{ transform: scaleY(1) }
+      40%{ transform: scaleY(.55) }
+      60%{ transform: scaleY(.95) }
+      80%{ transform: scaleY(.5) }
+    }
+    .equalizer .bar:nth-child(1){ animation-duration:1.15s; animation-delay:-.10s }
+    .equalizer .bar:nth-child(2){ animation-duration:1.00s; animation-delay:-.05s }
+    .equalizer .bar:nth-child(3){ animation-duration:1.30s; animation-delay:-.15s }
+    .equalizer .bar:nth-child(4){ animation-duration:1.05s; animation-delay:-.08s }
+    .equalizer .bar:nth-child(5){ animation-duration:1.25s; animation-delay:-.12s }
+    .equalizer .bar:nth-child(6){ animation-duration:1.10s; animation-delay:-.06s }
+    .equalizer .bar:nth-child(7){ animation-duration:1.22s; animation-delay:-.14s }
+
+    .loader-initials{
+      display:block;
+      margin-top:10px;
+      font-weight:800; letter-spacing:1.2px;
+      font-size:22px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 6px 16px rgba(10,132,255,.25));
+      z-index: 2;
+    }
+
+    /* Keep the loader visible when offline (no visual change, just show it) */
+    .loader.offline{
+      opacity:1 !important; transform:none !important; visibility:visible !important; pointer-events:auto !important;
+    }
+
+    /* Offline message + reconnect toast (separate elements; loader stays untouched) */
+    .offline-msg{
+      position:fixed; left:50%; bottom:32px; transform:translateX(-50%);
+      z-index:10000;
+      max-width:min(92vw, 720px);
+      padding:12px 16px; border-radius:14px;
+      background:linear-gradient(135deg, var(--primary), var(--accent));
+      color:#fff; font-weight:700; text-align:center;
+      box-shadow: 0 10px 30px rgba(10,132,255,.24);
+      letter-spacing:.2px; line-height:1.3;
+    }
+    .reconnect-toast{
+      position:fixed; left:50%; bottom:24px; transform: translateX(-50%) translateY(8px);
+      z-index:10000;
+      background:linear-gradient(135deg, var(--primary), var(--accent));
+      color:#fff; font-weight:700; letter-spacing:.2px;
+      padding:10px 14px; border-radius:12px; box-shadow:0 10px 26px rgba(10,132,255,.24);
+      opacity:0; pointer-events:none;
+      transition: opacity var(--fast), transform var(--fast);
+    }
+    .reconnect-toast.show{ opacity:1; transform: translateX(-50%) translateY(0) }
+
+    /* Progress bar */
+    .progress{
+      position:fixed; top:0; left:0; height:3px; width:100%;
+      background:linear-gradient(90deg, var(--primary), var(--accent));
+      z-index:120; box-shadow:0 4px 14px rgba(10,132,255,.22);
+      transform-origin:0 50%; transform: scaleX(0);
+      will-change: transform;
+    }
+
+    /* Footer */
+    .footer{ margin:40px 0 20px; color:#6e6e73 }
+    .footer-box{
+      display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px;
+    }
+    .footer-links{
+      display:flex; gap:18px; flex-wrap:wrap; justify-content:center;
+    }
+    .footer-links a{
+      position:relative; padding:8px 10px; border-radius:10px; font-weight:700;
+      transition:color var(--fast), background var(--fast)
+    }
+    .footer-links a:hover{ color:var(--primary); background:rgba(255,255,255,.55) }
+    .footer-links a::after{
+      content:""; position:absolute; left:8px; right:8px; bottom:4px; height:2px;
+      background:linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius:2px; transform:scaleX(0); transform-origin:center; transition:transform var(--fast)
+    }
+    .footer-links a:hover::after{ transform:scaleX(1) }
+
+    /* Content entrance after load */
+    body:not(.is-loaded) main, body:not(.is-loaded) .topbar-wrap, body:not(.is-loaded) footer{
+      opacity:0; transform: translateY(6px); filter: blur(2px)
+    }
+    body.is-loaded main, body.is-loaded .topbar-wrap, body.is-loaded footer{
+      opacity:1; transform:none; filter:none; transition: opacity 600ms var(--ease), transform 600ms var(--ease), filter 600ms var(--ease)
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      *{animation:none !important; transition:none !important; scroll-behavior:auto !important}
+    }
+  </style>
+</head>
+<body>
+  <!-- Loader (NEW: Glass Equalizer) -->
+  <div class="loader" id="pageLoader" aria-hidden="true">
+    <div class="loader-card glass">
+      <div class="aurora" aria-hidden="true"></div>
+      <div class="equalizer" role="img" aria-label="Loading">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+      <span class="loader-initials">HA</span>
+    </div>
+  </div>
+
+  <!-- Offline message (separate element) -->
+  <div class="offline-msg" id="offlineMessage" role="status" aria-live="polite" aria-atomic="true" hidden>
+    You’re offline. Please check your internet connection.
+  </div>
+
+  <!-- Reconnect toast -->
+  <div class="reconnect-toast" id="reconnectToast" role="status" aria-live="polite" aria-atomic="true" hidden>
+    Back online — Connection restored.
+  </div>
+
+  <div class="progress" id="progressBar" aria-hidden="true"></div>
+
+  <!-- Topbar -->
+  <div class="topbar-wrap">
+    <nav class="topbar glass container">
+      <div class="brand"><span class="badge" aria-hidden="true"></span> HUD AHMAD</div>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="siteNav">
+        <span class="bar" aria-hidden="true"></span>
+        <span class="bar" aria-hidden="true"></span>
+        <span class="bar" aria-hidden="true"></span>
+      </button>
+
+      <div class="nav" id="siteNav">
+        <a href="home.html">Home</a>
+        <a href="About.html">About</a>
+        <a href="Portfolio.html" aria-current="page">Portfolio</a>
+        <a href="Socials.html">Socials</a>
+      </div>
+
+      <div class="brand brand-ghost" aria-hidden="true"><span class="badge"></span> HUD AHMAD</div>
+    </nav>
+  </div>
+
+  <main class="container" id="home">
+    <!-- Hero -->
+    <section class="hero">
+      <div>
+        <div class="title-card glass reveal">
+          <h1>Portfolio</h1>
+        </div>
+        <p class="reveal" style="font-weight:600; color:#1C1C1E">Selected work · Highlights · Contact</p>
+        <p class="reveal" style="color:var(--muted)">Clean layout, centered highlights, single-color background, and smooth animations.</p>
+        <div class="hero-ctas reveal">
+          <a class="btn btn-primary" href="#projects">See Concepts</a>
+          <a class="btn" href="#featured">Featured</a>
+        </div>
+      </div>
+      <div class="hero-art glass reveal" aria-hidden="true">
+        <div class="ring"></div><div class="ring2"></div><div class="ring3"></div>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="projects">
+      <h2 class="center reveal">Projects</h2>
+      <p class="center reveal" style="color:var(--muted); margin-bottom:12px">Ten custom website concepts — one clear action.</p>
+
+      <div class="grid">
+        <article class="card glass reveal">
+          <div class="media">Site 1</div>
+          <div class="body">
+            <div class="title">Site 1</div>
+            <p class="desc">Custom website — responsive, accessible, fast.</p>
+            <div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span></div>
+            <div class="actions"><a class="btn btn-primary btn-small" href="Site1.html">See Concept</a></div>
+          </div>
+        </article>
+        <article class="card glass reveal">
+          <div class="media">Site 2</div>
+          <div class="body">
+            <div class="title">Site 2</div>
+            <p class="desc">Custom website — responsive, accessible, fast.</p>
+            <div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span></div>
+            <div class="actions"><a class="btn btn-primary btn-small" href="Site2.html">See Concept</a></div>
+          </div>
+        </article>
+        <article class="card glass reveal">
+          <div class="media">Site 3</div>
+          <div class="body">
+            <div class="title">Site 3</div>
+            <p class="desc">Custom website — responsive, accessible, fast.</p>
+            <div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span></div>
+            <div class="actions"><a class="btn btn-primary btn-small" href="Site3.html">See Concept</a></div>
+          </div>
+        </article>
+        <article class="card glass reveal">
+          <div class="media">Site 4</div>
+          <div class="body">
+            <div class="title">Site 4</div>
+            <p class="desc">Custom website — responsive, accessible, fast.</p>
+            <div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span></div>
+            <div class="actions"><a class="btn btn-primary btn-small" href="Site4.html">See Concept</a></div>
+          </div>
+        </article>
+        <article class="card glass reveal">
+          <div class="media">Site 5</div>
+          <div class="body">
+            <div class="title">Site 5</div>
+            <p class="desc">Custom website — responsive, accessible, fast.</p>
+            <div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span></div>
+            <div class="actions"><a class="btn btn-primary btn-small" href="Site5.html">See Concept</a></div>
+          </div>
+        </article>
+        <article class="card glass reveal">
+          <div class="media">Site 6</div>
+          <div class="body">
+            <div class="title">Site 6</div>
+            <p class="desc">Custom website — responsive, accessible, fast.</p>
+            <div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span></div>
+            <div class="actions"><a class="btn btn-primary btn-small" href="Site6.html">See Concept</a></div>
+          </div>
+        </article>
+        <article class="card glass reveal">
+          <div class="media">Site 7</div>
+          <div class="body">
+            <div class="title">Site 7</div>
+            <p class="desc">Custom website — responsive, accessible, fast.</p>
+            <div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span></div>
+            <div class="actions"><a class="btn btn-primary btn-small" href="Site7.html">See Concept</a></div>
+          </div>
+        </article>
+        <article class="card glass reveal">
+          <div class="media">Site 8</div>
+          <div class="body">
+            <div class="title">Site 8</div>
+            <p class="desc">Custom website — responsive, accessible, fast.</p>
+            <div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span></div>
+            <div class="actions"><a class="btn btn-primary btn-small" href="Site8.html">See Concept</a></div>
+          </div>
+        </article>
+        <article class="card glass reveal">
+          <div class="media">Site 9</div>
+          <div class="body">
+            <div class="title">Site 9</div>
+            <p class="desc">Custom website — responsive, accessible, fast.</p>
+            <div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span></div>
+            <div class="actions"><a class="btn btn-primary btn-small" href="Site9.html">See Concept</a></div>
+          </div>
+        </article>
+        <article class="card glass reveal">
+          <div class="media">Site 10</div>
+          <div class="body">
+            <div class="title">Site 10</div>
+            <p class="desc">Custom website — responsive, accessible, fast.</p>
+            <div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span></div>
+            <div class="actions"><a class="btn btn-primary btn-small" href="SiteX.html">See Concept</a></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Featured -->
+    <section id="featured" class="featured">
+      <h3 class="center reveal">Featured Highlights</h3>
+      <div class="rail">
+        <div class="feature-card glass reveal">
+          <h4>Micro‑interactions</h4>
+          <p>Purposeful motion that guides attention without slowing you down.</p>
+        </div>
+        <div class="feature-card glass reveal">
+          <h4>Accessibility</h4>
+          <p>Keyboard support, color contrast, and semantic markup considered.</p>
+        </div>
+        <div class="feature-card glass reveal">
+          <h4>Performance</h4>
+          <p>Lean assets, fewer dependencies, and smart loading patterns.</p>
+        </div>
+        <div class="feature-card glass reveal">
+          <h4>Consistency</h4>
+          <p>Tokens + components = faster iteration and fewer UI bugs.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="glass pad reveal">
+      <h3>Contact</h3>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:10px">
+        <input class="input" placeholder="Your name" aria-label="Your name" />
+        <input class="input" placeholder="Email address" type="email" aria-label="Email address" />
+      </div>
+      <textarea class="input" rows="4" placeholder="Tell me about your project..." aria-label="Message" style="margin-top:12px"></textarea>
+      <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:10px">
+        <button class="btn" type="button">Preview</button>
+        <button class="btn btn-primary" type="button">Send Message</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="glass pad footer-box">
+        <nav class="footer-links">
+          <a href="home.html">Home</a>
+          <a href="About.html">About</a>
+          <a href="Projects.html">Projects</a>
+          <a href="Portfolio.html" aria-current="page">Portfolio</a>
+          <a href="Socials.html">Socials</a>
+          <a href="home.html">Contacts</a>
+        </nav>
+        <div>© <span id="year"></span> Hud Ahmad</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Loader finish (keeps behavior the same)
+    const pageLoader = document.getElementById('pageLoader');
+    let isOffline = !navigator.onLine;
+
+    function finishIntro(){
+      document.body.classList.add('is-loaded');
+      setTimeout(() => { if (pageLoader && !isOffline) pageLoader.remove(); }, 700);
+    }
+    window.addEventListener('load', () => {
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      prefersReduced ? finishIntro() : setTimeout(finishIntro, 950);
+      updateProgress();
+      document.querySelectorAll('.reveal').forEach(el => {
+        const r = el.getBoundingClientRect();
+        if (r.top < innerHeight - 100) el.classList.add('in');
+      });
+    }, { once:true });
+    window.addEventListener('pageshow', (e)=>{ if(e.persisted) finishIntro(); });
+
+    // Reveal on scroll
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+    }, { threshold: 0.18, rootMargin: '0px 0px -60px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    // Scroll progress
+    const progress = document.getElementById('progressBar');
+    let ticking = false;
+    function updateProgress(){
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const doc = document.documentElement;
+        const max = doc.scrollHeight - doc.clientHeight;
+        const scrolled = max ? (doc.scrollTop || window.scrollY) / max : 0;
+        progress.style.transform = `scaleX(${Math.max(0, Math.min(1, scrolled))})`;
+        ticking = false;
+      });
+    }
+    addEventListener('scroll', updateProgress, { passive:true });
+    addEventListener('resize', updateProgress, { passive:true });
+
+    // Safety remap (legacy links)
+    document.querySelectorAll('a[href]').forEach(a => {
+      const href = a.getAttribute('href');
+      if (href === 'Projects.html' || href === 'projects.html') a.setAttribute('href', '#projects');
+    });
+
+    // Mobile hamburger menu
+    const nav = document.getElementById('siteNav');
+    const toggle = document.getElementById('navToggle');
+    function closeMenu(){
+      if (!toggle) return;
+      toggle.setAttribute('aria-expanded', 'false');
+      nav?.classList.remove('is-open');
+      document.body.classList.remove('menu-open');
+      toggle.setAttribute('aria-label','Open menu');
+    }
+    function openMenu(){
+      if (!toggle) return;
+      toggle.setAttribute('aria-expanded', 'true');
+      nav?.classList.add('is-open');
+      document.body.classList.add('menu-open');
+      toggle.setAttribute('aria-label','Close menu');
+    }
+    toggle?.addEventListener('click', () => {
+      const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+      isOpen ? closeMenu() : openMenu();
+    });
+    document.addEventListener('click', (e) => {
+      if (!nav?.classList.contains('is-open')) return;
+      const insideMenu = e.target.closest('#siteNav');
+      const isToggle = e.target.closest('#navToggle');
+      if (!insideMenu && !isToggle) closeMenu();
+    });
+    nav?.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+    window.addEventListener('resize', () => { if (window.innerWidth > 960) closeMenu(); }, { passive:true });
+
+    // Offline/Online handling + toast (unchanged)
+    const offlineMessage = document.getElementById('offlineMessage');
+    const reconnectToast = document.getElementById('reconnectToast');
+    let reconnectTimer;
+
+    function ensureLoaderInDOM(){
+      if (pageLoader && !document.body.contains(pageLoader)) {
+        document.body.appendChild(pageLoader);
+      }
+    }
+    function showOfflineOverlay(){
+      isOffline = true;
+      ensureLoaderInDOM();
+      pageLoader?.classList.add('offline');
+      pageLoader?.setAttribute('aria-hidden', 'false');
+      offlineMessage.hidden = false;
+    }
+    function showReconnectToast(){
+      if (!reconnectToast) return;
+      reconnectToast.hidden = false;
+      requestAnimationFrame(() => reconnectToast.classList.add('show'));
+      clearTimeout(reconnectTimer);
+      reconnectTimer = setTimeout(() => {
+        reconnectToast.classList.remove('show');
+        setTimeout(() => { reconnectToast.hidden = true; }, 220);
+      }, 2200);
+    }
+    function hideOfflineOverlay(){
+      isOffline = false;
+      pageLoader?.classList.remove('offline');
+      pageLoader?.setAttribute('aria-hidden', 'true');
+      offlineMessage.hidden = true;
+
+      if (document.body.classList.contains('is-loaded')) {
+        setTimeout(() => {
+          if (pageLoader && !isOffline && document.body.classList.contains('is-loaded')) {
+            pageLoader.remove();
+          }
+        }, 600);
+      }
+      showReconnectToast();
+    }
+    window.addEventListener('offline', showOfflineOverlay);
+    window.addEventListener('online', hideOfflineOverlay);
+    if (isOffline) showOfflineOverlay();
+  </script>
+</body>
+</html>

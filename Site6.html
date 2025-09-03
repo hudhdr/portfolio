@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0a0b12" />
+  <title>Cyberpunk Noir</title>
+
+  <!-- Futuristic typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    :root{
+      --bg: #07080d;
+      --bg-deep: #05060a;
+      --ink: #d7eaff;
+      --muted: #87a0b2;
+
+      --pink: #ff00e6;
+      --blue: #00eaff;
+      --violet: #7a00ff;
+      --cyan: #00ffd5;
+
+      --glow-pink: 0 0 10px rgba(255,0,230,.55), 0 0 22px rgba(255,0,230,.32), 0 0 42px rgba(255,0,230,.18);
+      --glow-blue: 0 0 10px rgba(0,234,255,.55), 0 0 22px rgba(0,234,255,.32), 0 0 42px rgba(0,234,255,.18);
+      --shadow-strong: 0 20px 60px rgba(0,0,0,.55), 0 6px 24px rgba(0,0,0,.65);
+    }
+
+    * { box-sizing: border-box }
+    html, body { height: 100% }
+    body{
+      margin:0;
+      background: radial-gradient(1200px 800px at 15% 10%, #090a12 10%, transparent 60%),
+                  radial-gradient(1200px 800px at 85% 15%, rgba(255,0,230,.06) 0%, transparent 55%),
+                  linear-gradient(180deg, #0a0b12 0%, #06070d 45%, #04050a 100%);
+      color: var(--ink);
+      font-family: "Rajdhani", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol", "Noto Color Emoji", sans-serif;
+      line-height: 1.25;
+      overflow-x: hidden;
+    }
+
+    /* Scene layers */
+    .scene{
+      position: relative;
+      min-height: 100dvh;
+      isolation: isolate;
+    }
+    .city-bg{
+      position: fixed;
+      inset: 0;
+      z-index: -4;
+      pointer-events: none;
+      opacity: .78;
+    }
+    #rain{
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: .95;
+    }
+    .vignette{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      background:
+        radial-gradient(1200px 600px at 50% 5%, rgba(0,234,255,.10) 0%, transparent 70%),
+        radial-gradient(1200px 600px at 60% 0%, rgba(255,0,230,.08) 0%, transparent 75%),
+        radial-gradient(1400px 900px at 50% 120%, rgba(0,0,0,.55), rgba(0,0,0,.85) 65%);
+      mix-blend-mode: screen;
+      opacity: .7;
+    }
+    .grain{
+      position: fixed;
+      inset: -2px;
+      z-index: 3;
+      pointer-events: none;
+      background-image: repeating-conic-gradient(from 0deg, rgba(255,255,255,.02) 0 7deg, rgba(0,0,0,0) 7deg 14deg);
+      animation: grainMove 18s linear infinite;
+      mix-blend-mode: soft-light;
+      opacity: .18;
+    }
+    @keyframes grainMove{
+      0%{ transform: translate3d(0,0,0) }
+      100%{ transform: translate3d(2px,-2px,0) }
+    }
+    .scanlines{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 4;
+      background:
+        linear-gradient(rgba(0,0,0,.12) 1px, transparent 2px);
+      background-size: 100% 3px;
+      mix-blend-mode: multiply;
+      opacity: .45;
+      animation: roll 9s linear infinite;
+    }
+    @keyframes roll{
+      0%{ background-position-y: 0 }
+      100%{ background-position-y: 100% }
+    }
+
+    /* Header / Nav */
+    header{
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: clamp(14px, 2.2vw, 28px) clamp(16px, 4vw, 56px);
+    }
+
+    .logo{
+      font-family: "Orbitron", system-ui, sans-serif;
+      font-weight: 800;
+      letter-spacing: .08em;
+      font-size: clamp(18px, 2.2vw, 28px);
+      color: var(--ink);
+      position: relative;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: inline-block;
+      filter: drop-shadow(0 0 12px rgba(0,234,255,.25));
+    }
+    .logo .mark{
+      color: var(--blue);
+      text-shadow: var(--glow-blue);
+    }
+    .logo.glitch::before,
+    .logo.glitch::after{
+      content: attr(data-text);
+      position: absolute; inset: 0;
+      clip-path: inset(0 0 0 0);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .logo.glitch:hover::before{
+      color: var(--blue);
+      text-shadow: var(--glow-blue);
+      mix-blend-mode: screen;
+      animation: glitchShift 600ms steps(2) infinite;
+      opacity: .9;
+    }
+    .logo.glitch:hover::after{
+      color: var(--pink);
+      text-shadow: var(--glow-pink);
+      mix-blend-mode: screen;
+      animation: glitchShift2 700ms steps(2) infinite;
+      opacity: .9;
+    }
+
+    nav{
+      display: flex;
+      gap: clamp(10px, 2.4vw, 24px);
+    }
+    nav a{
+      position: relative;
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 600;
+      letter-spacing: .12em;
+      font-size: clamp(12px, 1.3vw, 14px);
+      text-transform: uppercase;
+      transition: color .2s ease;
+      padding: 8px 10px;
+    }
+    nav a::after{
+      content:"";
+      position: absolute;
+      left: 10px; right: 10px; bottom: 2px;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255,0,230,0), rgba(255,0,230,.6), rgba(0,234,255,.7), rgba(255,0,230,.6), rgba(0,234,255,0));
+      transform: scaleX(0);
+      transform-origin: 0 50%;
+      transition: transform .28s ease;
+      box-shadow: var(--glow-blue), var(--glow-pink);
+    }
+    nav a:hover{
+      color: #edf9ff;
+      text-shadow: 0 0 12px rgba(0,234,255,.25), 0 0 22px rgba(255,0,230,.2);
+    }
+    nav a:hover::after{
+      transform: scaleX(1);
+    }
+
+    /* Hero */
+    .hero{
+      position: relative;
+      z-index: 6;
+      display: grid;
+      place-items: center;
+      min-height: calc(100dvh - 72px);
+      padding: clamp(16px, 4vw, 64px);
+    }
+
+    .hero-inner{
+      width: min(1200px, 92vw);
+      text-align: center;
+      backdrop-filter: blur(2px) saturate(105%);
+    }
+
+    .title{
+      --stroke: rgba(0,234,255,.18);
+      position: relative;
+      font-family: "Orbitron", system-ui, sans-serif;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: clamp(32px, 8.2vw, 98px);
+      line-height: 1.02;
+      margin: 0 0 .3em;
+      color: #e6f7ff;
+      text-shadow:
+        0 0 2px rgba(255,255,255,.45),
+        0 0 14px rgba(0,234,255,.28),
+        0 0 28px rgba(255,0,230,.22);
+      -webkit-text-stroke: 1px var(--stroke);
+    }
+
+    .title.glitch{
+      display: inline-block;
+    }
+    .title.glitch::before,
+    .title.glitch::after{
+      content: attr(data-text);
+      position: absolute; inset: 0;
+      pointer-events: none;
+      mix-blend-mode: screen;
+      opacity: 0;
+    }
+    .title.glitch:hover::before{
+      color: var(--blue);
+      text-shadow: var(--glow-blue);
+      animation: glitchShift 800ms steps(2) infinite;
+      opacity: .9;
+    }
+    .title.glitch:hover::after{
+      color: var(--pink);
+      text-shadow: var(--glow-pink);
+      animation: glitchShift2 820ms steps(2) infinite;
+      opacity: .9;
+    }
+
+    @keyframes glitchShift{
+      0%{ transform: translate(0,0)}
+      20%{ transform: translate(1px,-1px) }
+      40%{ transform: translate(-2px,1px) }
+      60%{ transform: translate(2px,2px) }
+      80%{ transform: translate(-1px,-1px) }
+      100%{ transform: translate(0,0)}
+    }
+    @keyframes glitchShift2{
+      0%{ transform: translate(0,0)}
+      25%{ transform: translate(-2px,2px) }
+      50%{ transform: translate(2px,-1px) }
+      75%{ transform: translate(-1px,1px) }
+      100%{ transform: translate(0,0)}
+    }
+
+    .subtitle{
+      margin: 0 auto 2.2rem;
+      max-width: 60ch;
+      color: var(--muted);
+      font-size: clamp(14px, 1.6vw, 18px);
+      letter-spacing: .06em;
+      line-height: 1.5;
+      text-shadow: 0 0 8px rgba(0,234,255,.15);
+    }
+
+    .cta{
+      display: inline-flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* Holographic buttons */
+    .holo-btn{
+      --f: 600;
+      --h: rgba(255,255,255,.06);
+      --borderAlpha: .85;
+
+      position: relative;
+      display: inline-grid;
+      place-items: center;
+      padding: 14px 26px;
+      min-width: 180px;
+      border-radius: 12px;
+      color: #e6fbff;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: .22em;
+      font-weight: 700;
+      font-size: clamp(12px, 1.4vw, 14px);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+      border: 1px solid transparent;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.055), var(--shadow-strong);
+      transition: transform .15s ease, box-shadow .2s ease, color .2s ease;
+      transform-style: preserve-3d;
+      perspective: 900px;
+      overflow: hidden;
+    }
+
+    /* Holographic border using gradient mask */
+    .holo-btn::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        conic-gradient(from 0deg at 50% 50%,
+          rgba(255,0,230,var(--borderAlpha)) 0 25%,
+          rgba(0,234,255,var(--borderAlpha)) 25% 50%,
+          rgba(0,255,213,var(--borderAlpha)) 50% 75%,
+          rgba(122,0,255,var(--borderAlpha)) 75% 100%);
+      filter: blur(2px) saturate(130%);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+              mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      padding: 1px;
+      border-radius: 12px;
+      opacity: .7;
+      transition: opacity .2s ease;
+    }
+    /* Glass sheen sweep */
+    .holo-btn::after{
+      content:"";
+      position: absolute;
+      inset: -30%;
+      background:
+        linear-gradient(60deg,
+          rgba(255,255,255,0) 10%,
+          rgba(255,255,255,.8) 12%,
+          rgba(0,234,255,.7) 13%,
+          rgba(255,0,230,.7) 14%,
+          rgba(255,255,255,0) 16%);
+      transform: translateX(-120%) rotate(8deg);
+      mix-blend-mode: screen;
+      filter: blur(8px);
+      opacity: .0;
+      transition: opacity .2s ease;
+    }
+
+    .holo-btn:hover{
+      color: #ffffff;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.09), 0 18px 60px rgba(0,234,255,.18), 0 12px 30px rgba(255,0,230,.12);
+    }
+    .holo-btn:hover::after{
+      animation: sweep 1.2s ease;
+      opacity: .85;
+    }
+    @keyframes sweep{
+      0%{ transform: translateX(-120%) rotate(8deg) }
+      100%{ transform: translateX(120%) rotate(8deg) }
+    }
+
+    /* Per-button glow hues */
+    .holo-btn.blue{
+      text-shadow: 0 0 8px rgba(0,234,255,.5);
+    }
+    .holo-btn.blue::before{ background: conic-gradient(from 0deg at 50% 50%, rgba(0,234,255,var(--borderAlpha)) 0 45%, rgba(0,255,213,var(--borderAlpha)) 45% 75%, rgba(255,0,230,var(--borderAlpha)) 75% 100%) }
+    .holo-btn.pink{
+      text-shadow: 0 0 8px rgba(255,0,230,.5);
+    }
+    .holo-btn.pink::before{ background: conic-gradient(from 0deg at 50% 50%, rgba(255,0,230,var(--borderAlpha)) 0 40%, rgba(122,0,255,var(--borderAlpha)) 40% 75%, rgba(0,234,255,var(--borderAlpha)) 75% 100%) }
+
+    /* Tilt-on-pointer */
+    .holo-btn[data-tilt="1"]{
+      transform: perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(var(--tz,0px));
+    }
+
+    /* Footer */
+    footer{
+      position: relative;
+      z-index: 6;
+      padding: 24px;
+      text-align: center;
+      color: #7e94a6;
+      font-size: 12px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    /* Rain-wet reflection strip near bottom */
+    .wet-glow{
+      position: fixed;
+      left: 0; right: 0; bottom: -10%;
+      height: 50vh;
+      background:
+        radial-gradient(80% 120% at 50% 0%, rgba(0,234,255,.12), rgba(255,0,230,.12), transparent 60%),
+        radial-gradient(60% 120% at 50% 10%, rgba(255,0,230,.08), rgba(0,234,255,.08), transparent 70%);
+      filter: blur(24px) saturate(110%);
+      z-index: -2;
+      pointer-events: none;
+      opacity: .65;
+    }
+
+    /* Reduced motion: tone it down */
+    @media (prefers-reduced-motion: reduce) {
+      .scanlines, .grain, .vignette{ animation: none }
+      .holo-btn:hover::after{ animation: none }
+      .logo.glitch:hover::before,
+      .logo.glitch:hover::after,
+      .title.glitch:hover::before,
+      .title.glitch:hover::after{ animation: none }
+    }
+  </style>
+</head>
+<body>
+  <div class="scene">
+    <!-- Stylized rain-soaked cyberpunk city background (inline SVG, no external images) -->
+    <svg class="city-bg" viewBox="0 0 1600 900" aria-hidden="true" role="img" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="#0b0f1e"/>
+          <stop offset="42%" stop-color="#090c18"/>
+          <stop offset="100%" stop-color="#04060c"/>
+        </linearGradient>
+        <linearGradient id="fog" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="rgba(15,26,40,0.0)"/>
+          <stop offset="60%" stop-color="rgba(15,26,40,0.45)"/>
+          <stop offset="100%" stop-color="rgba(15,26,40,0.85)"/>
+        </linearGradient>
+        <filter id="blur2" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="1.6" />
+        </filter>
+        <filter id="blur4" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="3.4" />
+        </filter>
+        <linearGradient id="reflectionFade" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="rgba(0,0,0,.55)"/>
+          <stop offset="50%" stop-color="rgba(0,0,0,.85)"/>
+          <stop offset="100%" stop-color="rgba(0,0,0,1)"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Sky -->
+      <rect x="0" y="0" width="1600" height="900" fill="url(#sky)"/>
+
+      <!-- Far skyline silhouettes -->
+      <g filter="url(#blur4)" opacity=".7">
+        <rect x="0" y="520" width="180" height="220" fill="#0b1020"/>
+        <rect x="160" y="490" width="120" height="250" fill="#0b1020"/>
+        <rect x="240" y="540" width="260" height="200" fill="#0c1224"/>
+        <rect x="460" y="500" width="200" height="240" fill="#0a1122"/>
+        <rect x="640" y="545" width="180" height="195" fill="#0b1022"/>
+        <rect x="800" y="520" width="240" height="220" fill="#0a1225"/>
+        <rect x="1020" y="490" width="150" height="250" fill="#0b1426"/>
+        <rect x="1140" y="530" width="290" height="210" fill="#0a1322"/>
+        <rect x="1370" y="510" width="160" height="230" fill="#0a1321"/>
+      </g>
+
+      <!-- Mid skyline -->
+      <g opacity=".9">
+        <rect x="40" y="560" width="220" height="260" fill="#0e1730"/>
+        <rect x="200" y="520" width="260" height="300" fill="#0e1836"/>
+        <rect x="420" y="570" width="200" height="250" fill="#0d1731"/>
+        <rect x="580" y="540" width="220" height="280" fill="#0d1734"/>
+        <rect x="760" y="570" width="240" height="250" fill="#0d1836"/>
+        <rect x="970" y="545" width="190" height="275" fill="#0c1634"/>
+        <rect x="1120" y="560" width="250" height="260" fill="#0d1730"/>
+        <rect x="1300" y="520" width="260" height="300" fill="#0e1836"/>
+      </g>
+
+      <!-- Neon windows and signs -->
+      <g opacity=".95">
+        <!-- windows scatter -->
+        <g fill="#14f1ff">
+          <rect x="222" y="620" width="8" height="6" opacity=".85"/>
+          <rect x="238" y="690" width="8" height="6" opacity=".65"/>
+          <rect x="262" y="650" width="8" height="6" opacity=".9"/>
+          <rect x="286" y="710" width="8" height="6" opacity=".7"/>
+          <rect x="602" y="640" width="8" height="6" opacity=".85"/>
+          <rect x="618" y="700" width="8" height="6" opacity=".75"/>
+          <rect x="820" y="620" width="8" height="6" opacity=".75"/>
+          <rect x="836" y="690" width="8" height="6" opacity=".75"/>
+          <rect x="1212" y="650" width="8" height="6" opacity=".8"/>
+          <rect x="1228" y="700" width="8" height="6" opacity=".7"/>
+          <rect x="1462" y="660" width="8" height="6" opacity=".85"/>
+        </g>
+        <!-- neon signs -->
+        <g>
+          <rect x="305" y="610" width="8" height="120" fill="#ff00e6" opacity=".95"/>
+          <rect x="310" y="610" width="2" height="120" fill="#ffffff" opacity=".6" />
+          <rect x="890" y="600" width="120" height="8" fill="#00eaff" opacity=".95"/>
+          <rect x="890" y="608" width="120" height="2" fill="#ffffff" opacity=".6"/>
+          <rect x="1380" y="590" width="10" height="140" fill="#7a00ff" opacity=".9"/>
+        </g>
+      </g>
+
+      <!-- Foreground base mass (near buildings, darker) -->
+      <g filter="url(#blur2)">
+        <rect x="0" y="740" width="1600" height="160" fill="#060811"/>
+      </g>
+
+      <!-- Reflection (upside-down fade) -->
+      <g transform="translate(0,1480) scale(1,-1)" opacity=".25" filter="url(#blur4)">
+        <rect x="0" y="520" width="180" height="220" fill="#0b1020"/>
+        <rect x="160" y="490" width="120" height="250" fill="#0b1020"/>
+        <rect x="240" y="540" width="260" height="200" fill="#0c1224"/>
+        <rect x="460" y="500" width="200" height="240" fill="#0a1122"/>
+        <rect x="640" y="545" width="180" height="195" fill="#0b1022"/>
+        <rect x="800" y="520" width="240" height="220" fill="#0a1225"/>
+        <rect x="1020" y="490" width="150" height="250" fill="#0b1426"/>
+        <rect x="1140" y="530" width="290" height="210" fill="#0a1322"/>
+        <rect x="1370" y="510" width="160" height="230" fill="#0a1321"/>
+      </g>
+
+      <!-- Fog layer near ground -->
+      <rect x="0" y="680" width="1600" height="220" fill="url(#fog)"/>
+    </svg>
+
+    <!-- Rain canvas -->
+    <canvas id="rain"></canvas>
+
+    <!-- Wet glow reflection near bottom -->
+    <div class="wet-glow"></div>
+
+    <!-- Overlays -->
+    <div class="vignette"></div>
+    <div class="grain"></div>
+    <div class="scanlines"></div>
+
+    <!-- Header -->
+    <header>
+      <a class="logo glitch" href="#" data-text="NEON NOIR" aria-label="Neon Noir Home">
+        <span class="mark">NEON</span> NOIR
+      </a>
+      <nav>
+        <a class="g-link" href="#">Home</a>
+        <a class="g-link" href="#">Cases</a>
+        <a class="g-link" href="#">Network</a>
+        <a class="g-link" href="#">Contact</a>
+      </nav>
+    </header>
+
+    <!-- Hero -->
+    <main class="hero">
+      <div class="hero-inner">
+        <h1 class="title glitch" data-text="CYBERPUNK // NOIR">
+          CYBERPUNK // NOIR
+        </h1>
+        <p class="subtitle">
+          Dark streets. Neon veins. Electric rain. Jack into a city that blinks and breathes,
+          where the night hums in <span style="color:var(--blue)">electric blue</span> and
+          <span style="color:var(--pink)">neon pink</span>.
+        </p>
+
+        <div class="cta">
+          <a href="#" class="holo-btn blue" data-tilt="1" aria-label="Jack In">Jack In</a>
+          <a href="#" class="holo-btn pink" data-tilt="1" aria-label="Explore the Grid">Explore</a>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      © 20XX Neon Noir — Rain-soaked dreams rendered in light
+    </footer>
+  </div>
+
+  <script>
+    // Pointer tilt for holographic buttons
+    (function(){
+      const btns = document.querySelectorAll('.holo-btn[data-tilt="1"]');
+      const maxTilt = 10; // degrees
+      const zLift = 14;
+
+      btns.forEach(btn => {
+        let rect;
+        const set = (x, y) => {
+          const cx = rect.left + rect.width/2;
+          const cy = rect.top + rect.height/2;
+          const dx = (x - cx) / (rect.width/2);
+          const dy = (y - cy) / (rect.height/2);
+          const ry = (dx * maxTilt);
+          const rx = (-dy * maxTilt);
+          btn.style.setProperty('--rx', rx.toFixed(2) + 'deg');
+          btn.style.setProperty('--ry', ry.toFixed(2) + 'deg');
+          btn.style.setProperty('--tz', zLift + 'px');
+        };
+
+        const reset = () => {
+          btn.style.setProperty('--rx', '0deg');
+          btn.style.setProperty('--ry', '0deg');
+          btn.style.setProperty('--tz', '0px');
+        };
+
+        btn.addEventListener('pointerenter', e => { rect = btn.getBoundingClientRect() });
+        btn.addEventListener('pointermove', e => set(e.clientX, e.clientY));
+        btn.addEventListener('pointerleave', reset);
+        btn.addEventListener('pointerdown', () => btn.style.transition = 'transform .04s ease');
+        btn.addEventListener('pointerup', () => btn.style.transition = '');
+      });
+    })();
+
+    // Canvas Rain — electric blue and neon pink streaks
+    (function(){
+      const canvas = document.getElementById('rain');
+      const ctx = canvas.getContext('2d', { alpha: true });
+      let dpr = Math.max(1, window.devicePixelRatio || 1);
+      let W, H, drops, wind, reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function resize(){
+        dpr = Math.max(1, window.devicePixelRatio || 1);
+        W = canvas.width = Math.floor(innerWidth * dpr);
+        H = canvas.height = Math.floor(innerHeight * dpr);
+        canvas.style.width = innerWidth + 'px';
+        canvas.style.height = innerHeight + 'px';
+        wind = 0.7 * dpr;
+
+        const density = reduceMotion ? 0.06 : 0.14; // per pixel*something
+        const count = Math.floor((W * H) / (9000 / dpr) * density);
+        drops = [];
+        for(let i=0;i<count;i++){
+          drops.push(makeDrop(true));
+        }
+      }
+
+      function rand(a,b){ return Math.random()*(b-a)+a }
+      function pick(arr){ return arr[(Math.random()*arr.length)|0] }
+
+      function makeDrop(init=false){
+        const len = rand(8*dpr, 24*dpr);
+        const speed = rand(3.4, 8.5) * dpr;
+        const thickness = rand(.6, 1.4) * dpr;
+        const hue = pick(['blue','pink']);
+        return {
+          x: init ? Math.random()*W : rand(-100*dpr, W+100*dpr),
+          y: init ? Math.random()*H : -rand(10, 300)*dpr,
+          len,
+          speed,
+          t: thickness,
+          hue,
+          sway: rand(-.4, .6) * dpr
+        };
+      }
+
+      function draw(){
+        // Clear with slight alpha to get subtle motion blur accumulation
+        ctx.clearRect(0,0,W,H);
+
+        ctx.lineCap = 'round';
+        ctx.globalCompositeOperation = 'lighter';
+
+        for(let i=0;i<drops.length;i++){
+          const d = drops[i];
+          const x2 = d.x - (wind + d.sway)*1.2;
+          const y2 = d.y + d.len;
+
+          if(d.hue === 'blue'){
+            ctx.strokeStyle = 'rgba(0,234,255,0.35)';
+            ctx.shadowColor = 'rgba(0,234,255,0.25)';
+          }else{
+            ctx.strokeStyle = 'rgba(255,0,230,0.28)';
+            ctx.shadowColor = 'rgba(255,0,230,0.20)';
+          }
+          ctx.shadowBlur = 6 * dpr;
+          ctx.lineWidth = d.t;
+          ctx.beginPath();
+          ctx.moveTo(d.x, d.y);
+          ctx.lineTo(x2, y2);
+          ctx.stroke();
+
+          // update
+          d.x -= wind + d.sway*0.7;
+          d.y += d.speed;
+
+          // recycle
+          if(d.y - d.len > H || d.x < -50*dpr || d.x > W + 50*dpr){
+            drops[i] = makeDrop();
+          }
+        }
+
+        ctx.globalCompositeOperation = 'source-over';
+        if(!reduceMotion) requestAnimationFrame(draw);
+      }
+
+      resize();
+      if(!reduceMotion) requestAnimationFrame(draw);
+      addEventListener('resize', () => { resize(); if(!reduceMotion) requestAnimationFrame(draw) });
+    })();
+
+    // Optional: subtle random glitch "tick" on nav hover (transform jitter)
+    (function(){
+      const links = document.querySelectorAll('nav a');
+      links.forEach(a => {
+        a.addEventListener('mouseenter', () => {
+          let t = 0, max = 6;
+          const jit = () => {
+            const dx = (Math.random()-.5)*2;
+            const dy = (Math.random()-.5)*2;
+            a.style.transform = `translate(${dx}px, ${dy}px)`;
+            if(t++ < max) requestAnimationFrame(jit);
+            else a.style.transform = '';
+          };
+          jit();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0B0F14" />
+  <meta name="color-scheme" content="dark" />
+  <title>Ultra-Modern Creative Portfolio</title>
+  <meta name="description" content="Ultra-modern creative portfolio with glassmorphism, neon accents, animated shapes, and subtle parallax effects." />
+
+  <!-- Font (minimal, crisp) -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #0B0F14;
+      --bg-2: #0F141C;
+      --text: #E6EEF8;
+      --muted: #A5B0C1;
+      --panel: rgba(255,255,255,0.06);
+      --panel-strong: rgba(255,255,255,0.08);
+      --panel-border: rgba(255,255,255,0.16);
+      --white-soft: rgba(255,255,255,0.85);
+      --blue: #00E7FF;
+      --violet: #7A5CFF;
+      --magenta: #FF2BD1;
+      --cyan: #06F0C4;
+      --glow: 0 0 24px rgba(0,231,255,.35), 0 0 48px rgba(255,43,209,.25);
+      --radius-lg: 18px;
+      --radius-sm: 12px;
+      --shadow-elev: 0 10px 40px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.06);
+      --grad-hero: linear-gradient(110deg, var(--blue) 0%, var(--magenta) 45%, var(--violet) 100%);
+      --grad-accent: linear-gradient(135deg, var(--blue), var(--magenta));
+      --card-bd: linear-gradient(145deg, rgba(255,255,255,.20), rgba(255,255,255,.02));
+      --speed-1: 40s;
+      --speed-2: 55s;
+      --speed-3: 70s;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji', sans-serif;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+    }
+
+    /* Layered atmospheric background */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -20vmax;
+      z-index: -3;
+      background:
+        radial-gradient(1200px 600px at 70% 20%, rgba(18,66,94,.35), transparent 60%),
+        radial-gradient(800px 600px at 30% 80%, rgba(94,18,67,.35), transparent 65%),
+        radial-gradient(1000px 800px at 10% 10%, rgba(20,120,140,.20), transparent 70%),
+        radial-gradient(2000px 1600px at 50% 50%, rgba(255,255,255,.03), transparent 70%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+      filter: blur(30px) saturate(120%);
+      transform: translateZ(0);
+      will-change: transform;
+    }
+
+    /* Floating neon blobs */
+    .blobs {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      z-index: -2;
+      pointer-events: none;
+    }
+    .blob {
+      position: absolute;
+      width: 44vmax;
+      height: 44vmax;
+      border-radius: 50%;
+      filter: blur(60px) saturate(140%);
+      opacity: .35;
+      mix-blend-mode: screen;
+      will-change: transform;
+    }
+    .blob.b1 { background: radial-gradient(circle at 30% 30%, rgba(0,231,255,.8), transparent 60%); animation: drift var(--speed-1) linear infinite alternate; }
+    .blob.b2 { background: radial-gradient(circle at 70% 40%, rgba(255,43,209,.8), transparent 60%); animation: drift var(--speed-2) linear infinite alternate-reverse; }
+    .blob.b3 { background: radial-gradient(circle at 50% 70%, rgba(122,92,255,.8), transparent 60%); animation: drift var(--speed-3) linear infinite alternate; }
+    .b1 { top:-10vmax; left:-8vmax; }
+    .b2 { bottom:-12vmax; right:-10vmax; }
+    .b3 { top:20vh; right:20vw; }
+
+    @keyframes drift {
+      0%   { transform: translate3d(0,0,0) scale(1); }
+      50%  { transform: translate3d(2vw, -3vh, 0) scale(1.05); }
+      100% { transform: translate3d(-2vw, 3vh, 0) scale(1); }
+    }
+
+    /* Glassmorphism foundation */
+    .glass {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-top-color: rgba(255,255,255,.22);
+      backdrop-filter: blur(16px) saturate(140%);
+      -webkit-backdrop-filter: blur(16px) saturate(140%);
+      box-shadow: var(--shadow-elev);
+    }
+
+    /* Navigation */
+    .navbar {
+      position: fixed;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(1100px, 94%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-radius: 16px;
+      z-index: 20;
+    }
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      user-select: none;
+    }
+    .brand .mark {
+      width: 28px; height: 28px; border-radius: 10px;
+      background: var(--grad-accent);
+      box-shadow: 0 0 18px rgba(0,231,255,.5), 0 0 28px rgba(255,43,209,.35);
+    }
+    .brand .name {
+      font-weight: 800;
+      letter-spacing: .3px;
+      background: var(--grad-accent);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 2px 14px rgba(0,231,255,.25));
+    }
+    nav a {
+      color: var(--white-soft);
+      text-decoration: none;
+      padding: 10px 12px;
+      border-radius: 10px;
+      transition: color .25s ease, background-color .25s ease, box-shadow .25s ease;
+      font-weight: 500;
+    }
+    nav a:hover {
+      color: #fff;
+      background: rgba(255,255,255,.06);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), 0 0 18px rgba(0,231,255,.15);
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      letter-spacing: .2px;
+      color: #fff;
+      cursor: pointer;
+      background:
+        linear-gradient(#0000, #0000) padding-box,
+        var(--grad-accent) border-box;
+      border: 2px solid transparent;
+      box-shadow: 0 8px 28px rgba(0,231,255,.22), 0 2px 10px rgba(255,43,209,.18);
+      transition: transform .2s ease, box-shadow .3s ease, background .3s ease, filter .3s ease;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 40px rgba(0,231,255,.36), 0 0 0 4px rgba(0,231,255,.08), 0 2px 16px rgba(255,43,209,.26);
+      filter: saturate(120%);
+    }
+    .btn.secondary {
+      background:
+        linear-gradient(#0000, #0000) padding-box,
+        linear-gradient(135deg, rgba(255,255,255,.22), rgba(255,255,255,.06)) border-box;
+      color: var(--text);
+      box-shadow: 0 8px 26px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.04);
+    }
+    .btn.secondary:hover {
+      box-shadow: 0 8px 38px rgba(0,0,0,.5), 0 0 0 4px rgba(255,255,255,.05), 0 0 24px rgba(0,231,255,.2);
+    }
+
+    .container {
+      width: min(1100px, 92%);
+      margin: 0 auto;
+    }
+
+    /* Hero */
+    #hero {
+      position: relative;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 120px 0 80px;
+      z-index: 1;
+    }
+    .hero-inner {
+      text-align: center;
+      max-width: 980px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .9rem;
+      padding: 8px 12px;
+      margin-bottom: 16px;
+      border-radius: 999px;
+      color: var(--white-soft);
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(8px);
+    }
+    .eyebrow .dot {
+      width: 8px; height: 8px; border-radius: 999px;
+      background: var(--grad-accent);
+      box-shadow: 0 0 12px rgba(0,231,255,.9);
+    }
+
+    h1.display {
+      font-weight: 800;
+      line-height: .96;
+      letter-spacing: -0.02em;
+      font-size: clamp(2.6rem, 7.5vw, 6.4rem);
+      margin: 0 0 16px;
+      background: linear-gradient(100deg, #fff 0%, #e6f7ff 15%, #cfe2ff 35%, #f6e2ff 50%, #fff 70%) padding-box, var(--grad-hero) border-box;
+      background: var(--grad-hero);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 18px 40px rgba(0,231,255,.15)) drop-shadow(0 8px 24px rgba(255,43,209,.12));
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: clamp(1rem, 1.6vw, 1.2rem);
+      line-height: 1.6;
+      margin: 0 auto 28px;
+      max-width: 720px;
+    }
+    .cta {
+      display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+    }
+    .cta .btn { min-width: 160px; }
+
+    /* Scroll cue */
+    .scroll-cue {
+      position: absolute;
+      bottom: 20px;
+      left: 50%; transform: translateX(-50%);
+      display: inline-flex; align-items: center; gap: 10px;
+      color: var(--muted);
+      font-size: .9rem;
+      opacity: .85;
+    }
+    .mouse {
+      width: 18px; height: 28px; border-radius: 10px;
+      border: 2px solid rgba(255,255,255,.25);
+      position: relative;
+    }
+    .mouse::after {
+      content: "";
+      position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
+      width: 3px; height: 6px; border-radius: 2px;
+      background: rgba(255,255,255,.6);
+      animation: wheel 1.2s ease-in-out infinite;
+    }
+    @keyframes wheel {
+      0% { transform: translate(-50%, 0); opacity: 1; }
+      100% { transform: translate(-50%, 6px); opacity: 0; }
+    }
+
+    /* Sections */
+    section {
+      position: relative;
+      padding: 72px 0;
+      z-index: 1;
+    }
+    .section-head {
+      margin: 0 auto 24px;
+      max-width: 900px;
+      text-align: center;
+    }
+    .section-head h2 {
+      font-size: clamp(1.6rem, 3.2vw, 2.6rem);
+      margin: 0 0 8px;
+      letter-spacing: -.02em;
+    }
+    .section-head p { color: var(--muted); margin: 0 auto; max-width: 720px; }
+
+    /* About glass panel */
+    .about-panel {
+      margin-top: 28px;
+      border-radius: var(--radius-lg);
+      padding: 26px;
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 22px;
+    }
+    .about-panel .copy { font-size: 1.05rem; line-height: 1.7; color: var(--white-soft); }
+    .stats {
+      display: grid; gap: 12px;
+    }
+    .stat {
+      border-radius: 14px; padding: 16px; display: grid; gap: 6px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .stat .num {
+      font-size: 1.6rem; font-weight: 800;
+      background: var(--grad-accent);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .stat .label { color: var(--muted); font-size: .95rem; }
+
+    /* Portfolio grid */
+    #portfolio { padding-top: 40px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 18px;
+      perspective: 1000px;
+    }
+    .card {
+      grid-column: span 4;
+      border-radius: 16px;
+      overflow: clip;
+      transform-style: preserve-3d;
+      transition: transform .25s ease, box-shadow .25s ease, filter .25s ease;
+      position: relative;
+      isolation: isolate;
+    }
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 14px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.06), 0 0 40px rgba(0,231,255,.12);
+      filter: saturate(115%);
+    }
+    .card .media {
+      height: 200px;
+      background:
+        radial-gradient(120% 140% at 10% 20%, rgba(0,231,255,.4), transparent 40%),
+        radial-gradient(100% 120% at 90% 80%, rgba(255,43,209,.35), transparent 45%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      position: relative;
+    }
+    .card .media::after {
+      content: "";
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(135deg, rgba(255,255,255,.04) 0 2px, transparent 2px 6px);
+      mix-blend-mode: overlay;
+      opacity: .35;
+      pointer-events: none;
+    }
+    .card .body {
+      padding: 16px 16px 18px;
+      display: grid; gap: 10px;
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+    }
+    .tag {
+      display: inline-flex; gap: 8px; align-items: center;
+      font-size: .78rem; color: var(--white-soft);
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      padding: 6px 10px; border-radius: 999px;
+    }
+    .title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: .2px;
+    }
+    .card .actions {
+      display: flex; gap: 10px; margin-top: 6px;
+    }
+    .mini {
+      font-size: .86rem;
+      padding: 8px 12px;
+      border-radius: 10px;
+      background:
+        linear-gradient(#0000,#0000) padding-box,
+        linear-gradient(135deg, rgba(255,255,255,.2), rgba(255,255,255,.06)) border-box;
+      border: 1px solid transparent;
+      color: var(--white-soft);
+      transition: .2s ease;
+    }
+    .mini:hover { color:#fff; box-shadow: 0 0 0 3px rgba(255,255,255,.05), 0 0 22px rgba(0,231,255,.18); }
+
+    /* Make some cards wider for variety */
+    .card.wide { grid-column: span 6; }
+    @media (max-width: 960px) {
+      .about-panel { grid-template-columns: 1fr; }
+      .card, .card.wide { grid-column: span 6; }
+    }
+    @media (max-width: 640px) {
+      .card, .card.wide { grid-column: span 12; }
+    }
+
+    /* Contact */
+    .contact-panel {
+      display: grid; gap: 16px; align-items: center;
+      grid-template-columns: 1.3fr .7fr;
+      padding: 26px;
+      border-radius: var(--radius-lg);
+      margin-top: 26px;
+    }
+    .contact-panel .lead {
+      font-size: 1.3rem; font-weight: 700;
+    }
+    .contact-panel .muted { color: var(--muted); }
+
+    @media (max-width: 860px){
+      .contact-panel { grid-template-columns: 1fr; text-align: center; }
+      .contact-panel .cta { justify-content: center; }
+    }
+
+    /* Footer */
+    footer {
+      padding: 60px 0 40px;
+      color: var(--muted);
+      text-align: center;
+      font-size: .95rem;
+    }
+
+    /* Parallax utility */
+    .parallax { will-change: transform; }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      html:focus-within { scroll-behavior: auto; }
+      .blob, .mouse::after, .card:hover { animation: none !important; }
+      .blob { transform: none !important; }
+      .btn, .card { transition: none !important; }
+    }
+
+    /* Selection */
+    ::selection {
+      background: rgba(0,231,255,.35);
+      color: #fff;
+    }
+
+    /* Accessibility: focus */
+    :focus-visible {
+      outline: 2px solid transparent;
+      box-shadow: 0 0 0 3px rgba(0,231,255,.55), 0 0 0 6px rgba(255,43,209,.25);
+      border-radius: 10px;
+      transition: box-shadow .15s ease;
+    }
+  </style>
+</head>
+<body>
+  <a href="#portfolio" class="visually-hidden">Skip to content</a>
+
+  <!-- Animated neon blobs -->
+  <div class="blobs">
+    <div class="blob b1 parallax" data-speed="0.08" aria-hidden="true"></div>
+    <div class="blob b2 parallax" data-speed="-0.06" aria-hidden="true"></div>
+    <div class="blob b3 parallax" data-speed="0.03" aria-hidden="true"></div>
+  </div>
+
+  <!-- Navigation -->
+  <header class="navbar glass">
+    <div class="brand">
+      <div class="mark" aria-hidden="true"></div>
+      <div class="name">Nova Creative</div>
+    </div>
+    <nav>
+      <a href="#hero">Home</a>
+      <a href="#about">About</a>
+      <a href="#portfolio">Work</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a class="btn" href="#contact" aria-label="Get in touch">Let’s Talk</a>
+  </header>
+
+  <!-- Hero -->
+  <section id="hero" class="container">
+    <div class="hero-inner parallax" data-speed="0.05">
+      <div class="eyebrow glass">
+        <span class="dot" aria-hidden="true"></span>
+        Crafting immersive digital experiences
+      </div>
+      <h1 class="display">Bold ideas. Sleek execution.</h1>
+      <p class="subtitle">A modern creative portfolio showcasing motion-rich interfaces, refined glassmorphism, and neon-infused accents—built for clarity, impact, and feel.</p>
+      <div class="cta">
+        <a class="btn" href="#portfolio">View Work</a>
+        <a class="btn secondary" href="#about">About Me</a>
+      </div>
+    </div>
+
+    <div class="scroll-cue" aria-hidden="true">
+      <div class="mouse"></div> <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="container">
+    <div class="section-head">
+      <h2>Building future-facing brands</h2>
+      <p>From concept to code, I design sleek, interactive experiences with a focus on motion, detail, and performance.</p>
+    </div>
+
+    <div class="about-panel glass parallax" data-speed="0.03">
+      <div class="copy">
+        <p>I’m a multidisciplinary designer and front-end developer specializing in modern interfaces. My work blends clarity with atmosphere—glass panels, subtle depth, and responsive motion that feels effortless on any device.</p>
+        <p>Whether you need a product site, brand refresh, or prototype, I create systems that scale—component-driven, accessible, and fast.</p>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <div class="num">120+ projects</div>
+          <div class="label">Across SaaS, Web3, and creative brands</div>
+        </div>
+        <div class="stat">
+          <div class="num">Awwwards shortlist</div>
+          <div class="label">Recognized for interaction and craft</div>
+        </div>
+        <div class="stat">
+          <div class="num">Performance-first</div>
+          <div class="label">Lighthouse scores in the 90s</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Portfolio -->
+  <section id="portfolio" class="container">
+    <div class="section-head">
+      <h2>Selected work</h2>
+      <p>Floating glass cards with subtle motion and hover interactions. Neon blue and magenta accents guide focus without clutter.</p>
+    </div>
+
+    <div class="grid">
+      <!-- Card 1 -->
+      <article class="card glass tilt parallax" data-speed="0.01" tabindex="0" aria-label="Project: HorizonOS">
+        <div class="media" role="img" aria-label="Abstract vibrant gradient preview of HorizonOS"></div>
+        <div class="body">
+          <div class="tag"><span>UI/UX</span>•<span>Web App</span></div>
+          <div class="title">HorizonOS — Productivity platform</div>
+          <div class="actions">
+            <a class="mini" href="#" aria-label="Open case study for HorizonOS">Case Study</a>
+            <a class="mini" href="#" aria-label="Visit HorizonOS live site">Live</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 2 -->
+      <article class="card glass tilt wide parallax" data-speed="0.015" tabindex="0" aria-label="Project: Nebula Labs">
+        <div class="media" role="img" aria-label="Futuristic gradient preview of Nebula Labs"></div>
+        <div class="body">
+          <div class="tag"><span>Brand</span>•<span>Website</span></div>
+          <div class="title">Nebula Labs — Brand + site system</div>
+          <div class="actions">
+            <a class="mini" href="#">Case Study</a>
+            <a class="mini" href="#">Live</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 3 -->
+      <article class="card glass tilt parallax" data-speed="0.02" tabindex="0" aria-label="Project: Flux Motion">
+        <div class="media" role="img" aria-label="Gradient preview of Flux Motion, kinetic typography and shapes"></div>
+        <div class="body">
+          <div class="tag"><span>Motion</span>•<span>Campaign</span></div>
+          <div class="title">Flux Motion — Kinetic launch</div>
+          <div class="actions">
+            <a class="mini" href="#">Case Study</a>
+            <a class="mini" href="#">Live</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 4 -->
+      <article class="card glass tilt parallax" data-speed="-0.01" tabindex="0" aria-label="Project: Prism Studio">
+        <div class="media" role="img" aria-label="Prism Studio gradient mockup"></div>
+        <div class="body">
+          <div class="tag"><span>Design System</span></div>
+          <div class="title">Prism Studio — Modular components</div>
+          <div class="actions">
+            <a class="mini" href="#">Case Study</a>
+            <a class="mini" href="#">Live</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 5 -->
+      <article class="card glass tilt wide parallax" data-speed="-0.02" tabindex="0" aria-label="Project: Aurora Commerce">
+        <div class="media" role="img" aria-label="Aurora Commerce neon gradient product shot"></div>
+        <div class="body">
+          <div class="tag"><span>E‑commerce</span>•<span>UI/UX</span></div>
+          <div class="title">Aurora Commerce — Conversion-focused UX</div>
+          <div class="actions">
+            <a class="mini" href="#">Case Study</a>
+            <a class="mini" href="#">Live</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 6 -->
+      <article class="card glass tilt parallax" data-speed="0.012" tabindex="0" aria-label="Project: Pulse Analytics">
+        <div class="media" role="img" aria-label="Pulse Analytics data visualization gradient"></div>
+        <div class="body">
+          <div class="tag"><span>Data Viz</span></div>
+          <div class="title">Pulse Analytics — Visual language</div>
+          <div class="actions">
+            <a class="mini" href="#">Case Study</a>
+            <a class="mini" href="#">Live</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="container">
+    <div class="section-head">
+      <h2>Let’s build something remarkable</h2>
+      <p>Have a project or idea in mind? I’m open for collaborations, product work, and prototypes.</p>
+    </div>
+
+    <div class="contact-panel glass parallax" data-speed="0.02">
+      <div>
+        <div class="lead">Available for freelance and select full-time roles</div>
+        <p class="muted">Response within 24–48 hours. I can also share a deeper deck, timelines, and budgets.</p>
+      </div>
+      <div class="cta">
+        <a class="btn" href="mailto:hello@example.com">hello@example.com</a>
+        <a class="btn secondary" href="#" aria-label="Download resume">Download Résumé</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="container">
+    © <span id="year"></span> Nova Creative — Designed with glass, glow, and a love for details.
+  </footer>
+
+  <script>
+    // Parallax on scroll (subtle)
+    (function(){
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const els = Array.from(document.querySelectorAll('.parallax'));
+      let ticking = false;
+
+      function update(){
+        const y = window.scrollY || window.pageYOffset;
+        els.forEach(el=>{
+          const speed = parseFloat(el.dataset.speed || 0.05);
+          el.style.transform = `translate3d(0, ${Math.round(y * speed)}px, 0)`;
+        });
+        ticking = false;
+      }
+      function onScroll(){
+        if(prefersReduced) return;
+        if(!ticking){ requestAnimationFrame(update); ticking = true; }
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      update();
+    })();
+
+    // 3D tilt on hover for cards
+    (function(){
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(prefersReduced) return;
+
+      const cards = document.querySelectorAll('.tilt');
+      const maxTilt = 8; // deg
+
+      cards.forEach(card=>{
+        let raf = null;
+
+        function handleMove(e){
+          const rect = card.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          const dx = (e.clientX - cx) / (rect.width / 2);
+          const dy = (e.clientY - cy) / (rect.height / 2);
+          const rx = (-dy * maxTilt).toFixed(2);
+          const ry = (dx * maxTilt).toFixed(2);
+
+          if(raf) cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(()=>{
+            card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
+          });
+        }
+        function reset(){
+          card.style.transform = '';
+        }
+
+        card.addEventListener('pointermove', handleMove);
+        card.addEventListener('pointerleave', reset);
+        card.addEventListener('focus', ()=>card.style.transform = 'translateY(-8px)');
+        card.addEventListener('blur', reset);
+      });
+    })();
+
+    // Current year
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+
+  <style>
+    /* Small accessibility helper */
+    .visually-hidden {
+      position: absolute !important;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0);
+      white-space: nowrap; border: 0;
+    }
+  </style>
+</body>
+</html>
